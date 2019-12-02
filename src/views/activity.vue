@@ -393,7 +393,7 @@ export default {
       };
       let res = await requestLotterys(params);
       if(res.code == 313000){
-        this.is_ok = true
+        this.is_ok = false
         return
       }
       let list = res.data.lottery_info;
