@@ -391,8 +391,12 @@ export default {
         order_sn: this.order_sn
         // order_sn: (new Date()).getTime()
       };
-      let list = await requestLotterys(params);
-      list = list.data.lottery_info;
+      let res = await requestLotterys(params);
+      if(res.code == 313000){
+        this.is_ok = true
+        return
+      }
+      let list = res.data.lottery_info;
       for (let i = 0; i < list.length; i++) {
         list[i].active = false;
       }
