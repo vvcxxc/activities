@@ -1,42 +1,5 @@
 <template>
   <div class="activity">
-    <!-- <div class="header">
-      <img :src="success_icon" /> 支付完成！
-    </div>
-    <div class="order-num" ref="order" @click="showOrder" v-if="!isshow">
-      <div>
-        <p class="ordernum">订单号：{{message.order_sn}}</p>
-      </div>
-      <i class="iconfont bottom-arro">
-        <span class="xiangqing">订单详情</span>&#xe62c;
-      </i>
-    </div>
-    <div class="order-num1" ref="order" @click="showOrder" v-if="isshow">
-      <div>
-        <p class="ordernum">订单号：{{message.order_sn}}</p>
-      </div>
-      <p>店铺：{{message.store_name}}</p>
-      <p>支付方式：{{message.browsertype}}</p>
-      <p>金额：{{message.amount}}</p>
-      <p v-if="is_result_money">实付：{{message.result_money}}</p>
-      <i class="iconfont bottom-arro">&#xe61f;</i>
-    </div>
-
-    <div class="order-num-zhanwei"></div> -->
-
-    <!-- 文字轮播 -->
-    <div class="scroll-top">
-      <div class="scroll-list" id="scroll">
-        <div
-          id="marquee"
-        >恭喜1284获得<span style="color:yellow">￥50元无门槛红包</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;恭喜9098获得<span style="color:yellow">￥30元无门槛红红包</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;恭喜4727获得<span style="color:yellow">￥30元无门槛红包</span></div>
-        <div
-          id="copy"
-        >恭喜1284获得<span style="color:yellow">￥50元无门槛红包</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;恭喜9098获得<span style="color:yellow">￥30元无门槛红红包</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;恭喜4727获得<span style="color:yellow">￥30元无门槛红包</span></div>
-      </div>
-      <div id="node"></div>
-    </div>
-
     <!-- 主题内容 -->
     <main>
       <div class="prizeWheels" v-if="is_ok">
@@ -151,7 +114,7 @@ import {
   requestGetResult,
   requestGetCoupon,
   requestOrderCoupons
-} from "../api/api_pay";
+} from "../api/api";
 import { Loading, Dialog } from "vant";
 export default {
   data() {
@@ -250,7 +213,6 @@ export default {
   mounted() {
     _hmt.push(["_trackEvent", "活动页", "跳转到活动页"]);
     this.getList();
-    this.move();
 
     this.loading = setTimeout(() => {
       this.is_loading = false;
@@ -448,24 +410,6 @@ export default {
       }
       this.list = list;
     },
-
-    // 滚动播报
-    move() {
-      // 获取文字text 的计算后宽度  （由于overflow的存在，直接获取不到，需要独立的node计算）
-      let width = document.getElementById("node").getBoundingClientRect().width;
-      let scroll = document.getElementById("scroll");
-      // let copy = document.getElementById('copy')
-      let distance = 0; // 位移距离
-      this.timer5 = setInterval(function() {
-        distance = distance - 1;
-        // 如果位移超过文字宽度，则回到起点
-        if (-distance >= width) {
-          distance = 16;
-        }
-        scroll.style.transform = "translateX(" + distance + "px)";
-      }, 20);
-    },
-
     // 立即领取
     async getCoupon() {
       _hmt.push(["_trackEvent", "领取", "领取奖品"]);

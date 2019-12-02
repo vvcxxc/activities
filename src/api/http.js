@@ -54,7 +54,7 @@ instance.interceptors.response.use(
         case NOT_SIGN:
           import("../utils/handle_login").then(({ Login }) => {
             window.console.log("execute Login method")
-            // return Login()
+            return Login()
           })
           break
         case NOT_FIND:
