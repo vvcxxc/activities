@@ -115,6 +115,7 @@ import {
   requestGetCoupon,
   requestOrderCoupons
 } from "../api/api";
+import {getUrlParams} from '../utils/get_info'
 import { Loading, Dialog } from "vant";
 export default {
   data() {
@@ -187,28 +188,15 @@ export default {
     }
   },
   created() {
-    if (sessionStorage.getItem("message")) {
-      this.message = JSON.parse(sessionStorage.getItem("message"));
-    } else {
-      let message = this.$route.params;
-      if (message.browsertype == "wechat") {
-        message.browsertype = "微信支付";
-      } else if (message.browsertype == "alipay") {
-        message.browsertype = "支付宝支付";
-      } else {
-        message.browsertype = "";
-      }
-      if (!message.result_money) {
-        this.is_result_money = false;
-      }
-      this.message = message;
-      sessionStorage.setItem("message", JSON.stringify(message));
+    console.log(123)
+    let { order_sn } = getUrlParams()
+    let orderSn = sessionStorage.getItem('order_sn')
+    if(orderSn && orderSn == order_sn){
+      this.is_ok = false
+    }else{
+      this.is_ok = true
     }
-    if (sessionStorage.getItem("is_ok")) {
-      this.is_ok = false;
-    } else {
-      this.is_ok = true;
-    }
+    this.order_sn = order_sn
   },
   mounted() {
     _hmt.push(["_trackEvent", "活动页", "跳转到活动页"]);
@@ -222,10 +210,7 @@ export default {
   methods: {
     //获取支付返券
     async getOrderCoupon() {
-      let is_ok = sessionStorage.getItem("is_ok");
-      if (is_ok) {
-        return;
-      }
+      // 订单判断
       let order_sn = this.message.order_sn;
       let params = {
         order_sn
@@ -290,15 +275,16 @@ export default {
     },
     play() {
       //点击开始游戏
-      let is_ok = sessionStorage.getItem("is_ok");
-      if (is_ok) {
+      // 订单判定
+      let order_sn = sessionStorage.getItem("order_sn");
+      if (order_sn && this.order_sn == order_sn) {
         Dialog.alert({
           message: "您已抽奖",
           confirmButtonColor: "#fc4833"
         });
         return;
       } else {
-        sessionStorage.setItem("is_ok", 1);
+        sessionStorage.setItem("order_sn", this.order_sn);
       }
       _hmt.push(["_trackEvent", "抽奖", "点击抽奖"]);
       if (this.isMoving) {
