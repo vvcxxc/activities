@@ -42,7 +42,8 @@ router.beforeEach((to,from,next) => {
       Cookie.get(process.env.VUE_APP_TOKEN) == "undefined" ||
       Cookie.get(process.env.VUE_APP_TOKEN) == ""
     ) {
-      Login();
+      console.log('要登录啦')
+      // Login();
       return;
     }
   }
