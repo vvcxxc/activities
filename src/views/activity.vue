@@ -200,6 +200,7 @@ export default {
   },
   mounted() {
     _hmt.push(["_trackEvent", "活动页", "跳转到活动页"]);
+    console.log(this.order_sn)
     this.getList();
 
     this.loading = setTimeout(() => {
@@ -208,10 +209,11 @@ export default {
   },
 
   methods: {
+    
     //获取支付返券
     async getOrderCoupon() {
       // 订单判断
-      let order_sn = this.message.order_sn;
+      let order_sn = this.order_sn;
       let params = {
         order_sn
       };
@@ -386,7 +388,7 @@ export default {
       let params = {
         xpoint: "113.450163",
         ypoint: "23.107527",
-        order_sn: this.message.order_sn
+        order_sn: this.order_sn
         // order_sn: (new Date()).getTime()
       };
       let list = await requestLotterys(params);
