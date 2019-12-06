@@ -51,17 +51,16 @@
 }
 </style>
 <template>
-  <div
-    class="card-3d"
-    @click="eve_cardres_click"
-  >
+  <div class="card-3d" @click="eve_cardres_click">
     <div class="card card-z" ref="cardz">
       <slot name="cz">
         <div class="defaultCard"></div>
       </slot>
     </div>
     <div :class="['card',direction=='row'?'card-f-y':'card-f-x']" ref="cardf">
-      <div class="openCard"></div>
+      <slot name="cf">
+        <div class="openCard"></div>
+      </slot>
     </div>
   </div>
 </template>
