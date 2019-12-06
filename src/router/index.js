@@ -6,7 +6,7 @@ Vue.use(VueRouter);
 const Activity = () => import(/* webpackChunkName: "Pay" */ '@/views/activity.vue')
 const Ad = () => import('@/views/activity_ad.vue')
 const ActivityCard = () => import('@/views/activity_card.vue')
-
+const Test=()=>  import('@/views/test.vue')
 var router = new VueRouter({
   // 命名:组件名大驼峰、path/name小驼峰
   mode: 'history',
@@ -28,7 +28,13 @@ var router = new VueRouter({
       path: '/activity_card',
       name: 'activity_card',
       component: ActivityCard
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: Test
     }
+    
   ]
 })
 
