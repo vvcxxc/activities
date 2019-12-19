@@ -188,7 +188,6 @@ export default {
     }
   },
   created() {
-    console.log(123)
     let { order_sn } = getUrlParams()
     let orderSn = sessionStorage.getItem('order_sn')
     if(orderSn && orderSn == order_sn){
