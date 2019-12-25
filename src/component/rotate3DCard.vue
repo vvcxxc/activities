@@ -16,17 +16,12 @@
     height: 100%;
     transition: all 2s;
     backface-visibility: hidden;
-    border-radius: 0.08rem;
-    overflow: hidden;
 
     &:hover {
       box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
       border-color: #eee;
     }
 
-    &.card-z {
-      background-color: #fff;
-    }
 
     &.card-f-y {
       transform: rotateY(-180deg);
@@ -39,9 +34,10 @@
     .defaultCard {
       width: 100%;
       height: 100%;
-      background: url('http://oss.tdianyi.com/front/7yPzJ6miZyzYE4HM474dtPS6srxekHPc.png');
+      background: url('http://oss.tdianyi.com/front/EzAkZYE2b4zsbQfkQjrrsAwC2hZeGWhp.png');
       background-size: 100% 100%;
       background-repeat: no-repeat;
+    
 
       .cardWordBox {
         height: 2.8rem;
@@ -58,8 +54,8 @@
           justify-content: center;
 
           .theWords {
-            width: 1.475rem;
-            height: 1.475rem;
+            width: 1.3rem;
+            height: 1.3rem;
           }
         }
 
@@ -162,14 +158,16 @@
 
                 .maskName {
                   font-size: 0.1rem;
+                  line-height :1;
                   color: #fff;
-                  height: 0.18rem;
+                  height: 0.15rem;
                 }
 
                 .maskPrice {
                   font-size: 0.1rem;
+                  line-height :1;
                   color: #fff;
-                  height: 0.18rem;
+                  height: 0.15rem;
                 }
               }
             }
@@ -346,6 +344,7 @@
       <div class="defaultCard">
         <div class="cardWordBox">
           <div class="cardKeyWord">
+            <!-- 四张图片对应抽到‘小熊敬礼’四个字 -->
             <img
               class="theWords"
               src="http://oss.tdianyi.com/front/Z7DdRBTpX7ETwnzsFkbQ8kPyEDjQZHdp.png"
@@ -368,7 +367,8 @@
       <div class="openCard">
         <!-- 实物奖品 -->
         <div class="ticketBox">
-          <div class="ticketTitle">一份慕斯蛋糕</div>
+          <div class="ticketTitle">商品券</div>
+          <!-- <div class="ticketTitle">华为p30一台</div> -->
           <div class="ticketContentBox">
             <div class="ticketImageBox">
               <div class="physical">
@@ -388,8 +388,9 @@
             </div>
           </div>
           <div class="ticketMsg">可到店使用，免费兑换商品一份！</div>
-           <!-- <div class="ticketMsg">前往指定地址，进行兑换领取！</div> -->
+          <!-- <div class="ticketMsg">前往指定地址，进行兑换领取！</div> -->
         </div>
+
         <!-- 代金券 -->
         <!-- <div class="ticketBox">
           <div class="ticketTitle">100元代金券</div>
@@ -412,6 +413,7 @@
           </div>
           <div class="ticketMsg">到店使用，扫码支付可进行抵扣！</div>
         </div>-->
+
         <!-- 没中奖 -->
         <!-- <div class="ticketBox">
           <div class="noTicketBox">
@@ -420,6 +422,7 @@
             <div class="pityMsg">与奖品擦肩而过了</div>
           </div>
         </div>-->
+
         <!-- 没机会了 -->
         <!-- <div class="ticketBox">
           <div class="noTicketBox">
@@ -429,7 +432,9 @@
           </div>
         </div>-->
         <div class="collectBtnBox">
+          <!-- 关闭遮罩，没做啥其他操作，就文案不同 -->
           <div class="collectBtn" @click="this._props.closeContent">立即收下</div>
+          <!-- <div class="collectBtn" @click="this._props.closeContent">关闭</div> -->
         </div>
       </div>
     </div>
@@ -438,15 +443,17 @@
 <script>
 export default {
   props: {
+    //翻转触发方式
     trigger: {
       type: String,
       default: "click" //默认点击触发
     },
     direction: {
-      //方向 row col
+      //翻转方向 row col
       type: String,
       default: "row"
     },
+    //关闭遮罩的函数
     closeContent: {
       type: Function
     },

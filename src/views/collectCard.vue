@@ -201,7 +201,7 @@
 </template>
 <script>
 import { Loading, Dialog } from "vant";
-import rotate3DCard from "./testCard";
+import rotate3DCard from "../component/rotate3DCard";
 export default {
   data() {
     return {
