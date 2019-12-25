@@ -245,6 +245,7 @@ export default {
           })
           .catch(err => {
             console.log(err);
+            this.showLoading = false;
             Toast("网络似乎不太通畅，请稍候再试");
           });
       }
