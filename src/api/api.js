@@ -139,3 +139,12 @@ export const getActivityRafflePrize = () =>
     url: 'v3/Lotterys/activity_raffle_prize',
     method: 'get',
   });
+
+/**
+* 获取轮盘抽奖剩余次数
+*/
+export const getActivityPrizeNum = () =>
+  http({
+    url: 'v3/Lotterys/lucky_draw_number',
+    method: 'get',
+  });

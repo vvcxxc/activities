@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <div class="loadingBox" v-if="this.showLoading">
+      <van-loading />
+    </div>
     <div class="wheelTime">活动日期：2020.01.01-2020.01.30</div>
     <div class="wheelContentBox">
       <div class="wheelContentBackground">
@@ -8,7 +11,7 @@
             <!-- 指定每次旋转到的奖品下标 -->
             <div
               class="wheel-pointer"
-              @click="rotate_handle(0)"
+              @click="rotate_handle()"
               :style="{transform:rotate_angle_pointer,transition:rotate_transition_pointer}"
             ></div>
           </div>
@@ -17,7 +20,7 @@
               <div class="prize-item" v-for="(item,index) in prize_list" :key="index">
                 <div class="prize-type">{{item.name}}</div>
                 <div class="prize-pic">
-                  <img :src="item.images" />
+                  <img :src="item.image" />
                 </div>
               </div>
             </div>
@@ -45,7 +48,7 @@
         </div>
       </div>
       <div class="introduceItemBox">
-        <div class="ticketCrown"></div>
+        <!-- <div class="ticketCrown"></div> -->
         <div class="introduceTop">
           <div class="gitfLevel">
             <div class="gitfLevelNum">二</div>
@@ -62,7 +65,7 @@
         </div>
       </div>
       <div class="introduceItemBox">
-        <div class="ticketCrown"></div>
+        <!-- <div class="ticketCrown"></div> -->
         <div class="introduceTop">
           <div class="gitfLevel">
             <div class="gitfLevelNum">三</div>
@@ -123,35 +126,44 @@
   </div>
 </template>
 <script>
-import { getActivityRafflePrize, getCityLoveResult } from "../api/api";
+import {
+  getActivityRafflePrize,
+  getCityLoveResult,
+  getActivityPrizeNum
+} from "../api/api";
+import Vue from "vue";
+import { Loading, Toast } from "vant";
+Vue.use(Loading);
+Vue.use(Toast);
+
 export default {
   data() {
     return {
-      realPriceList: [],
-      winPrice: false, //中奖没
-      lottery_ticket: 3, //剩余抽奖次数
+      showLoading: false,
+      winPrice: false, //中奖没，点击开始转查询数据立刻改变
+      lottery_ticket: 0, //剩余抽奖次数
       prize_list: [], //奖品列表
       toast_control: false, //抽奖结果弹出框控制器
-      // toast_control: true, //抽奖结果弹出框控制器
-      chance_control: false, //没机会弹出控制器
-      hasPrize: false, //是否中奖
+      chance_control: false, //机会用完了弹出控制器
+      hasPrize: false, //是否中奖，跟着winPrice转完在改变，控制文案
       start_rotating_degree: 0, //初始旋转角度
       rotate_angle: 0, //将要旋转的角度
       start_rotating_degree_pointer: 0, //指针初始旋转角度
       rotate_angle_pointer: 0, //指针将要旋转的度数
       rotate_transition: "transform 6s ease-in-out", //初始化选中的过度属性控制
       rotate_transition_pointer: "transform 12s ease-in-out", //初始化指针过度属性控制
-      click_flag: true, //是否可以旋转抽奖
-      index: 0
+      click_flag: true, //是否可以旋转抽奖，函数防抖
+      index: 0 //转到的下标
     };
   },
   mounted() {
     this.getData();
+    this.getNum();
   },
   computed: {
     toast_icon() {
       return this.hasPrize
-        ? this.prize_list[this.index].images
+        ? this.prize_list[this.index].image
         : "http://oss.tdianyi.com/front/5s3ZYyetkSmr5csdBeEQDSf4P3XbeWx2.png";
     },
     toast_nav() {
@@ -165,51 +177,81 @@ export default {
   },
   methods: {
     async getData() {
+      //查询奖品列表
       let res = await getActivityRafflePrize();
       if (res.code == 200) {
         this.prize_list = res.data;
-        let realPriceList = [];
-        for (let i in res.data) {
-          if (res.data[i].name.indexOf("谢谢参与") != -1) {
-            realPriceList.push(res.data[i]);
-          }
-        }
-        this.realPriceList = realPriceList;
       }
     },
-    async rotate_handle() {
+    getNum() {
+      //查询剩余次数
+      getActivityPrizeNum()
+        .then(res => {
+          if (res.code == 200 && res.data && res.data.luckyDrawNumber) {
+            this.lottery_ticket = res.data.luckyDrawNumber;
+          } else {
+            Toast(res.message);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          Toast("网络似乎不太通畅，请稍候再试");
+        });
+    },
+
+    rotate_handle() {
+      //查询转到哪里
       if (!this.click_flag) {
         return;
       } else if (this.lottery_ticket <= 0) {
         this.chance_control = true;
       } else {
+        this.showLoading = true;
         let winIndex;
-        let res = await getCityLoveResult();
-        if (res.data && res.data.win_id) {
-          //中奖了
-          for (let i in this.prize_list) {
-            if ((this.prize_list[i].id = res.data.win_id)) {
-              winIndex = Number(i);
-              this.winPrice = true;
-              break;
+        getCityLoveResult()
+          .then(res => {
+            this.showLoading = false;
+            if (res.code == 200) {
+              if (res.data && res.data.win_id) {
+                //有结果
+                for (let i in this.prize_list) {
+                  if (
+                    (this.prize_list[i].activity_prize_id = res.data.win_id)
+                  ) {
+                    winIndex = Number(i);
+                    console.log("lalala", this.prize_list[i].name);
+                    if (this.prize_list[i].name.indexOf("谢谢参与") == -1) {
+                      this.winPrice = true;
+                    } else {
+                      this.winPrice = false;
+                    }
+                    break;
+                  }
+                }
+              } else {
+                //不知道咋回事没有结果,例如抽到一个商品库存不足，直接给他转到谢谢参与
+                for (let i in this.prize_list) {
+                  console.log(this.prize_list[i].name);
+                  if (this.prize_list[i].name.indexOf("谢谢参与") != -1) {
+                    winIndex = Number(i);
+                    this.winPrice = false;
+                    break;
+                  }
+                }
+              }
+              this.index = winIndex; //指定每次旋转到的奖品下标
+              this.rotating();
+            } else {
+              Toast(res.message);
             }
-          }
-        } else {
-          //没中奖
-          for (let i in this.prize_list) {
-            console.log(this.prize_list[i].name);
-            if (this.prize_list[i].name.indexOf("谢谢参与") != -1) {
-              winIndex = Number(i);
-              this.winPrice = false;
-              break;
-            }
-          }
-        }
-        console.log("winIndex", winIndex);
-        this.index = winIndex; //指定每次旋转到的奖品下标
-        this.rotating();
+          })
+          .catch(err => {
+            console.log(err);
+            Toast("网络似乎不太通畅，请稍候再试");
+          });
       }
     },
+    //开始转了
     rotating() {
       var during_time = 5; // 默认为1s
       var result_index = this.index; // 最终要旋转到哪一块，对应prize_list的下标
@@ -227,22 +269,25 @@ export default {
       // // //转动指针
       // this.rotate_angle_pointer = "rotate("+this.start_rotating_degree_pointer + 360*rand_circle+"deg)";
       // this.start_rotating_degree_pointer =360*rand_circle;
+      this.getNum();
       var that = this;
       setTimeout(function() {
         // 旋转结束后，允许再次触发
         that.click_flag = true;
-        that.lottery_ticket = that.lottery_ticket - 1;
+        // that.lottery_ticket = that.lottery_ticket - 1;
         that.game_over();
       }, during_time * 1000 + 1500); // 延时，保证转盘转完
     },
+    //转完了
     game_over() {
       this.toast_control = true;
-      this.hasPrize = this.prize_list[this.index].isPrize;
+      this.hasPrize = this.winPrice;
     },
     //关闭弹窗
     close_toast() {
       this.toast_control = false;
     },
+    //关闭机会用完了弹窗
     close_chance_toast() {
       this.chance_control = false;
     }
@@ -261,6 +306,21 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.loadingBox {
+  width: 0.5rem;
+  height: 0.5rem;
+  position: fixed;
+  z-index: 10;
+  left: 50%;
+  top: 50%;
+  margin-left: -0.25rem;
+  margin-top: -0.25rem;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 0.04rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .wheelTime {
   width: 100%;

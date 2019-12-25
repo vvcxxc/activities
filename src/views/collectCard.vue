@@ -3,11 +3,12 @@
     <div class="rulesShowButton"></div>
     <div class="cardMask" v-if="cardShow">
       <div class="cardContent">
+        <!-- 查到的后端数据testData传给子组件 -->
         <rotate3DCard
           trigger="click"
           direction="row"
-          v-bind:info="showType"
           v-bind:closeContent="this.closeContent"
+          v-bind:data="this.testData"
         />
       </div>
     </div>
@@ -18,13 +19,13 @@
         <div class="cornRight"></div>
       </div>
       <div class="collectWordsContent">
-        <!-- 小 -->
+        <!-- 小 :每种卡有（有收集，未收集）两种样式，有收集的右上角有收集张数小圆点-->
         <div class="wordItem">
           <img
             class="words"
             src="http://oss.tdianyi.com/front/Z7DdRBTpX7ETwnzsFkbQ8kPyEDjQZHdp.png"
           />
-          <div class="smallNumIcon">1</div>
+          <div class="this.winPrice = true">1</div>
         </div>
         <!-- <div class="noWordItem">
           <img
@@ -207,7 +208,7 @@ export default {
       cardShow: true,
       // cardShow: false,
       message: {},
-      showType: 22
+      testData: { name: "小", ticket: "444444测试" }
     };
   },
   components: {

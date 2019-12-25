@@ -254,7 +254,7 @@
               line-clamp: 2;
               -webkit-box-orient: vertical;
               font-size: 0.1rem;
-              line-height :1.2;
+              line-height: 1.2;
               font-family: PingFang;
               color: rgba(153, 153, 153, 1);
             }
@@ -446,11 +446,11 @@ export default {
       type: String,
       default: "row"
     },
-    info: {
-      type: String | Number
-    },
     closeContent: {
       type: Function
+    },
+    testData: {
+      type: Object
     }
   },
   data() {
@@ -459,7 +459,7 @@ export default {
     };
   },
   created() {
-    console.log("_props", this._props);
+    console.log("_props", this._props.testData);
   },
   methods: {
     fn_reserve_action(bool) {
