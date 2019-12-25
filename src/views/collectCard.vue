@@ -344,8 +344,9 @@ export default {
           top: -0.1rem;
           width: 0.2rem;
           height: 0.2rem;
-          line-height: 0.2rem;
-          text-align: center;
+          display :flex;
+          justify-content :center;
+          align-items :center;
           border: 0.01rem solid #fff;
           border-radius: 0.1rem;
           background: #f44604;
