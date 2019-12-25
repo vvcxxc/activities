@@ -216,9 +216,10 @@ export default {
                 //有结果
                 for (let i in this.prize_list) {
                   if (
-                    (this.prize_list[i].activity_prize_id = res.data.win_id)
+                    (this.prize_list[i].activity_prize_id == res.data.win_id)
                   ) {
                     winIndex = Number(i);
+                    console.log(winIndex)
                     if (this.prize_list[i].name.indexOf("谢谢参与") == -1) {
                       this.winPrice = true;
                     } else {
