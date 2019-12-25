@@ -16,8 +16,8 @@ export const storeInfo = params =>
  */
 export const requestWechatPayment = params =>
   http({
-    url:'v1/guest/storePay/wechatPay',
-    method:'post',
+    url: 'v1/guest/storePay/wechatPay',
+    method: 'post',
     params,
   })
 
@@ -27,8 +27,8 @@ export const requestWechatPayment = params =>
  */
 export const requestAlpayPayment = params =>
   http({
-    url:'v1/guest/storePay/alipay',
-    method:'post',
+    url: 'v1/guest/storePay/alipay',
+    method: 'post',
     params
   });
 
@@ -71,9 +71,9 @@ export const requestGetCoupon = () =>
     method: 'put',
   })
 
-  /**
-   * 下单返券
-   */
+/**
+ * 下单返券
+ */
 export const requestOrderCoupons = params =>
   http({
     url: 'v3/return_coupons',
@@ -130,3 +130,12 @@ export const getCityLoveResult = () =>
     url: 'v3/Lotterys/activity_raffle',
     method: 'put',
   })
+
+/**
+* 获取轮盘抽奖列表
+*/
+export const getActivityRafflePrize = () =>
+  http({
+    url: 'v3/Lotterys/activity_raffle_prize',
+    method: 'get',
+  });

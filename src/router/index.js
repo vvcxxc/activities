@@ -45,6 +45,9 @@ var router = new VueRouter({
 
 // 路由守卫
 router.beforeEach((to, from, next) => {
+  if (process.env.VUE_APP_FLAG == 'development') {
+    Cookie.set('test_token_auth', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vdGVzdC5hcGkudGRpYW55aS5jb20vd2VjaGF0L3d4b2F1dGgiLCJpYXQiOjE1NzcxNzMzMTAsImV4cCI6MTU3NzUzMzMxMCwibmJmIjoxNTc3MTczMzEwLCJqdGkiOiJnN0x3NlJwTERYbjI0VE9oIiwic3ViIjo2ODQwLCJwcnYiOiJmNmI3MTU0OWRiOGMyYzQyYjc1ODI3YWE0NGYwMmI3ZWU1MjlkMjRkIn0.h1Bu83hV9sTiJc5DUNTHZuswL6zk-P_DyXPa_xYRyJo')
+  }
   if (to.name == 'pay') {
     if (
       Cookie.get(process.env.VUE_APP_TOKEN) == "undefined" ||

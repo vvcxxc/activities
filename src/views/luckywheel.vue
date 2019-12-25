@@ -17,7 +17,7 @@
               <div class="prize-item" v-for="(item,index) in prize_list" :key="index">
                 <div class="prize-type">{{item.name}}</div>
                 <div class="prize-pic">
-                  <img :src="item.icon" />
+                  <img :src="item.images" />
                 </div>
               </div>
             </div>
@@ -36,7 +36,7 @@
           </div>
           <img
             class="introduceGiftImg"
-            src="http://oss.tdianyi.com/front/d4mGfZzXpfWeBYE5Wnapz6t2YKN7XpNf.png"
+            src="http://oss.tdianyi.com/front/SYzFTKmeA55jbKfjF24Jd3YiTCjBiKNH.png"
           />
         </div>
         <div class="introduceBottom">
@@ -53,7 +53,7 @@
           </div>
           <img
             class="introduceGiftImg"
-            src="http://oss.tdianyi.com/front/MFWpRh5W2AaQPKEm6C8WKw6yP2Tf4CCS.png"
+            src="http://oss.tdianyi.com/front/keyaBpXNHZWjT5mhtMs4hmP3Dnk8cwcn.png"
           />
         </div>
         <div class="introduceBottom">
@@ -70,7 +70,7 @@
           </div>
           <img
             class="introduceGiftImg"
-            src="http://oss.tdianyi.com/front/KyGzHdAjfGbhmY3jQy3bEh8EK3z3tfQG.png"
+            src="http://oss.tdianyi.com/front/AYGQ4zi72KyQM8r4B3mYQW4j7ptNMhHn.png"
           />
         </div>
         <div class="introduceBottom">
@@ -85,7 +85,9 @@
         <div class="toast-content">
           <div class="toast-title">{{toast_nav}}</div>
           <img class="toast-gift-img" :src="toast_icon" />
-          <div class="toast-infoMessage">{{toast_title}}</div>
+          <div class="toast-infoMessage">
+            <div class="toastMessage">{{toast_title}}</div>
+          </div>
           <div class="acceptBtn" v-if="this.hasPrize">立即领取</div>
           <div class="acceptBtn" v-if="!this.hasPrize" @click="close_toast">我知道了</div>
         </div>
@@ -105,7 +107,9 @@
             class="toast-gift-img"
             src="http://oss.tdianyi.com/front/fYkbp4rXZzBppQKdXKpApt4Hj4iYZcx5.png"
           />
-          <div class="toast-infoMessage">抽奖次数不足，集齐卡片后可再次抽奖哦！</div>
+          <div class="toast-infoMessage">
+            <div class="toastMessage">抽奖次数不足，集齐卡片后可再次抽奖哦！</div>
+          </div>
           <div class="acceptBtn" @click="close_chance_toast">我知道了</div>
         </div>
         <div class="toast-btn" @click="close_chance_toast">
@@ -119,51 +123,14 @@
   </div>
 </template>
 <script>
+import { getActivityRafflePrize, getCityLoveResult } from "../api/api";
 export default {
   data() {
     return {
+      realPriceList: [],
+      winPrice: false, //中奖没
       lottery_ticket: 3, //剩余抽奖次数
-      prize_list: [
-        {
-          icon:
-            "http://oss.tdianyi.com/front/d4mGfZzXpfWeBYE5Wnapz6t2YKN7XpNf.png",
-          name: "下标0奖品", // 奖品名称（一等奖; 二等奖; 三等奖）
-          isPrize: 1, // 该奖项是否为奖品,
-          info: "华为P30一台" // 奖品内容（奖品名字 + 量词）
-        },
-        {
-          icon:
-            "http://oss.tdianyi.com/front/Aj65fPMbsRRcnTjThNkadmbENYZC4sK5.png", // 奖品图片
-          name: "谢谢参与",
-          isPrize: 0
-        },
-        {
-          icon:
-            "http://oss.tdianyi.com/front/MFWpRh5W2AaQPKEm6C8WKw6yP2Tf4CCS.png",
-          name: "下标2奖品",
-          isPrize: 1,
-          info: "华为P30一台"
-        },
-        {
-          icon:
-            "http://oss.tdianyi.com/front/Aj65fPMbsRRcnTjThNkadmbENYZC4sK5.png",
-          name: "谢谢参与",
-          isPrize: 0
-        },
-        {
-          icon:
-            "http://oss.tdianyi.com/front/KyGzHdAjfGbhmY3jQy3bEh8EK3z3tfQG.png",
-          name: "下标4奖品",
-          isPrize: 1,
-          info: "华为P30一台"
-        },
-        {
-          icon:
-            "http://oss.tdianyi.com/front/Aj65fPMbsRRcnTjThNkadmbENYZC4sK5.png",
-          name: "谢谢参与",
-          isPrize: 0
-        }
-      ], //奖品列表
+      prize_list: [], //奖品列表
       toast_control: false, //抽奖结果弹出框控制器
       // toast_control: true, //抽奖结果弹出框控制器
       chance_control: false, //没机会弹出控制器
@@ -178,13 +145,13 @@ export default {
       index: 0
     };
   },
-  created() {
-    this.init_prize_list();
+  mounted() {
+    this.getData();
   },
   computed: {
     toast_icon() {
       return this.hasPrize
-        ? this.prize_list[this.index].icon
+        ? this.prize_list[this.index].images
         : "http://oss.tdianyi.com/front/5s3ZYyetkSmr5csdBeEQDSf4P3XbeWx2.png";
     },
     toast_nav() {
@@ -192,48 +159,81 @@ export default {
     },
     toast_title() {
       return this.hasPrize
-        ? "恭喜您，抽中" + this.prize_list[this.index].info
+        ? "恭喜您，抽中" + this.prize_list[this.index].name
         : "好遗憾，你与奖品擦肩而过了";
     }
   },
   methods: {
-    //此方法为处理奖品数据
-    init_prize_list(list) {},
-    rotate_handle(check_index) {
-      this.index = check_index; //指定每次旋转到的奖品下标
-      this.rotating();
+    async getData() {
+      let res = await getActivityRafflePrize();
+      if (res.code == 200) {
+        this.prize_list = res.data;
+        let realPriceList = [];
+        for (let i in res.data) {
+          if (res.data[i].name.indexOf("谢谢参与") != -1) {
+            realPriceList.push(res.data[i]);
+          }
+        }
+        this.realPriceList = realPriceList;
+      }
     },
-    rotating() {
+    async rotate_handle() {
       if (!this.click_flag) {
         return;
       } else if (this.lottery_ticket <= 0) {
         this.chance_control = true;
       } else {
-        var during_time = 5; // 默认为1s
-        var random = Math.floor(Math.random() * 7);
-        var result_index = this.index; // 最终要旋转到哪一块，对应prize_list的下标
-        var result_angle = [0, 60, 120, 180, 240, 300]; //最终会旋转到下标的位置所需要的度数
-        var rand_circle = 6; // 附加多转几圈，2-3
-        this.click_flag = false; // 旋转结束前，不允许再次触发
-        // 转动盘子
-        var rotate_angle =
-          this.start_rotating_degree +
-          rand_circle * 360 +
-          result_angle[result_index] -
-          (this.start_rotating_degree % 360);
-        this.start_rotating_degree = rotate_angle;
-        this.rotate_angle = "rotate(" + rotate_angle + "deg)";
-        // // //转动指针
-        // this.rotate_angle_pointer = "rotate("+this.start_rotating_degree_pointer + 360*rand_circle+"deg)";
-        // this.start_rotating_degree_pointer =360*rand_circle;
-        var that = this;
-        setTimeout(function() {
-          // 旋转结束后，允许再次触发
-          that.click_flag = true;
-          that.lottery_ticket = that.lottery_ticket - 1;
-          that.game_over();
-        }, during_time * 1000 + 1500); // 延时，保证转盘转完
+        let winIndex;
+        let res = await getCityLoveResult();
+        if (res.data && res.data.win_id) {
+          //中奖了
+          for (let i in this.prize_list) {
+            if ((this.prize_list[i].id = res.data.win_id)) {
+              winIndex = Number(i);
+              this.winPrice = true;
+              break;
+            }
+          }
+        } else {
+          //没中奖
+          for (let i in this.prize_list) {
+            console.log(this.prize_list[i].name);
+            if (this.prize_list[i].name.indexOf("谢谢参与") != -1) {
+              winIndex = Number(i);
+              this.winPrice = false;
+              break;
+            }
+          }
+        }
+        console.log("winIndex", winIndex);
+        this.index = winIndex; //指定每次旋转到的奖品下标
+        this.rotating();
       }
+    },
+    rotating() {
+      var during_time = 5; // 默认为1s
+      var result_index = this.index; // 最终要旋转到哪一块，对应prize_list的下标
+      var result_angle = [0, 60, 120, 180, 240, 300]; //最终会旋转到下标的位置所需要的度数
+      var rand_circle = 6; // 附加多转几圈，2-3
+      this.click_flag = false; // 旋转结束前，不允许再次触发
+      // 转动盘子
+      var rotate_angle =
+        this.start_rotating_degree +
+        rand_circle * 360 +
+        result_angle[result_index] -
+        (this.start_rotating_degree % 360);
+      this.start_rotating_degree = rotate_angle;
+      this.rotate_angle = "rotate(" + rotate_angle + "deg)";
+      // // //转动指针
+      // this.rotate_angle_pointer = "rotate("+this.start_rotating_degree_pointer + 360*rand_circle+"deg)";
+      // this.start_rotating_degree_pointer =360*rand_circle;
+      var that = this;
+      setTimeout(function() {
+        // 旋转结束后，允许再次触发
+        that.click_flag = true;
+        that.lottery_ticket = that.lottery_ticket - 1;
+        that.game_over();
+      }, during_time * 1000 + 1500); // 延时，保证转盘转完
     },
     game_over() {
       this.toast_control = true;
@@ -533,9 +533,16 @@ export default {
   height: 0.75rem;
 }
 .toast-infoMessage {
-  width: 100%;
+  width: 2rem;
   height: 0.5rem;
-  line-height: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.toastMessage {
+  width: 2.375rem;
+  line-height: 1.2;
   text-align: center;
   font-size: 0.13;
   font-weight: bold;
