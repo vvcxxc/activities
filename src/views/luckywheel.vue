@@ -219,7 +219,6 @@ export default {
                     (this.prize_list[i].activity_prize_id = res.data.win_id)
                   ) {
                     winIndex = Number(i);
-                    console.log("lalala", this.prize_list[i].name);
                     if (this.prize_list[i].name.indexOf("谢谢参与") == -1) {
                       this.winPrice = true;
                     } else {
@@ -231,7 +230,6 @@ export default {
               } else {
                 //不知道咋回事没有结果,例如抽到一个商品库存不足，直接给他转到谢谢参与
                 for (let i in this.prize_list) {
-                  console.log(this.prize_list[i].name);
                   if (this.prize_list[i].name.indexOf("谢谢参与") != -1) {
                     winIndex = Number(i);
                     this.winPrice = false;
