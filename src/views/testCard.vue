@@ -388,6 +388,7 @@
             </div>
           </div>
           <div class="ticketMsg">可到店使用，免费兑换商品一份！</div>
+           <!-- <div class="ticketMsg">前往指定地址，进行兑换领取！</div> -->
         </div>
         <!-- 代金券 -->
         <!-- <div class="ticketBox">
