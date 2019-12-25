@@ -344,9 +344,9 @@ export default {
           top: -0.1rem;
           width: 0.2rem;
           height: 0.2rem;
-          display :flex;
-          justify-content :center;
-          align-items :center;
+          display: flex;
+          justify-content: center;
+          align-items: center;
           border: 0.01rem solid #fff;
           border-radius: 0.1rem;
           background: #f44604;
@@ -552,14 +552,16 @@ export default {
 
                 .maskName {
                   font-size: 0.1rem;
+                  line-height: 1;
                   color: #fff;
-                  height: 0.18rem;
+                  height: 0.15rem;
                 }
 
                 .maskPrice {
                   font-size: 0.1rem;
+                  line-height: 1;
                   color: #fff;
-                  height: 0.18rem;
+                  height: 0.15rem;
                 }
               }
             }
