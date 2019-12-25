@@ -25,7 +25,7 @@
             class="words"
             src="http://oss.tdianyi.com/front/Z7DdRBTpX7ETwnzsFkbQ8kPyEDjQZHdp.png"
           />
-          <div class="this.winPrice = true">1</div>
+          <div class="smallNumIcon">1</div>
         </div>
         <!-- <div class="noWordItem">
           <img
