@@ -91,7 +91,7 @@
           <div class="toast-infoMessage">
             <div class="toastMessage">{{toast_title}}</div>
           </div>
-          <div class="acceptBtn" v-if="this.hasPrize">立即领取</div>
+          <div class="acceptBtn" v-if="this.hasPrize" @click="getPrize">立即领取</div>
           <div class="acceptBtn" v-if="!this.hasPrize" @click="close_toast">我知道了</div>
         </div>
         <div class="toast-btn" @click="close_toast">
@@ -176,6 +176,12 @@ export default {
     }
   },
   methods: {
+    // 领取奖品
+    getPrize () {
+      console.log('123')
+      window.location.href = process.env.VUE_APP_PRIZE
+    },
+
     async getData() {
       //查询奖品列表
       let res = await getActivityRafflePrize();
