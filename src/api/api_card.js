@@ -23,3 +23,10 @@ export const getCardInfo = data =>
         method: 'post',
         data
     })
+
+//  消除卡片
+export const delCard = () =>
+    http({
+        url: 'list/del',
+        method: 'delete'
+    })

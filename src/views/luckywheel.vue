@@ -28,7 +28,7 @@
         </div>
         <div class="timesBox">
           剩余次数：{{this.lottery_ticket}}次
-          <div class="button">按钮</div>
+          <div class="button" @click="openChangeNum">兑换按钮</div>
         </div>
       </div>
     </div>
@@ -85,7 +85,7 @@
         </div>
       </div>
     </div>
-
+    <!-- 中奖 -->
     <div class="toast-mask" v-show="toast_control">
       <div class="toast">
         <div class="toast-content">
@@ -105,6 +105,7 @@
         </div>
       </div>
     </div>
+    <!-- 次数不足 -->
     <div class="toast-mask" v-show="chance_control">
       <div class="toast">
         <div class="toast-content">
@@ -126,6 +127,21 @@
         </div>
       </div>
     </div>
+
+    <div class="toast-mask" v-if="number_change_toast">
+      <div class="toast">
+        <div class="number-change-bg">
+          <div class="number-change-text">
+            <p>兑换抽奖次数将消耗</p>
+            <p>“小”、“熊”、“敬”“礼”各一张。</p>
+          </div>
+          <div class="number-change-buttom">
+            <div class="change-confirm" @click="changeTheNum">确认</div>
+            <div class="change-cancel" @click="close_number_toast">取消</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -134,6 +150,7 @@ import {
   getCityLoveResult,
   getActivityPrizeNum
 } from "../api/api";
+import { delCard } from '../api/api_card'
 import Vue from "vue";
 import { Loading, Toast } from "vant";
 Vue.use(Loading);
@@ -156,7 +173,8 @@ export default {
       rotate_transition: "transform 6s ease-in-out", //初始化选中的过度属性控制
       rotate_transition_pointer: "transform 12s ease-in-out", //初始化指针过度属性控制
       click_flag: true, //是否可以旋转抽奖，函数防抖
-      index: 0 //转到的下标
+      index: 0, //转到的下标
+      number_change_toast: false, // 兑换次数弹窗
     };
   },
   mounted() {
@@ -183,6 +201,26 @@ export default {
     getPrize () {
       console.log('123')
       window.location.href = process.env.VUE_APP_PRIZE
+    },
+
+    //  打开兑换次数窗口
+    openChangeNum (){
+      this.number_change_toast = true
+    },
+    //  兑换次数
+    changeTheNum (){
+      this.number_change_toast = false
+      delCard().then(res => {
+        console.log(res)
+        if(res.status_code == 200){
+          // 消卡成功，重新请求抽奖次数
+          this.getNum()
+          Toast('兑换成功')
+        }else {
+          // 消卡失败
+          Toast('卡片不足');
+        }
+      })
     },
 
     async getData() {
@@ -299,6 +337,10 @@ export default {
     //关闭机会用完了弹窗
     close_chance_toast() {
       this.chance_control = false;
+    },
+    // 关闭兑换次数弹窗
+    close_number_toast() {
+      this.number_change_toast = false
     }
   }
 };
@@ -464,12 +506,13 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* width: .4rem; */
-  padding: 0 .1rem;
-  border-radius: 4px;
+  border:1px solid rgba(239,209,183,1);
+  padding: 0 .06rem;
+  border-radius: 20px;
+  font-size: .11rem;
+  color: #EFD1B7;
   height: .2rem;
-  background: #fff;
-  right: .6rem;
+  right: .7rem;
 }
 
 .introduceBox {
@@ -589,6 +632,44 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+}
+
+.number-change-bg {
+  width: 100%;
+  height: 2.2rem;
+  position: relative;
+  background: url('../assets/alert.png') no-repeat;
+  background-size: 100%
+}
+.number-change-text {
+  margin-top: .96rem;
+  font-size: .13rem;
+  color: #FE6E23;
+  text-align: center;
+  margin-bottom: .3rem;
+}
+.number-change-buttom {
+  display: flex;
+  justify-content: center
+}
+.number-change-buttom div {
+  height: .38rem;
+  width: 1rem;
+  border-radius:38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .17rem;
+}
+.change-confirm {
+  background:linear-gradient(0deg,rgba(255,99,18,1) 0%,rgba(254,110,35,1) 100%);
+  color: #fff;
+}
+.change-cancel {
+  border:1px solid rgba(255,105,28,1);
+  border-radius:38px;
+  color: #FE6C20;
+  margin-left: .07rem;
 }
 
 .toast-content {

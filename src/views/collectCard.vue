@@ -326,6 +326,7 @@ export default {
   },
   beforeDestroy() {
     // 组件销毁前
+    clearTimeout(this.timer);
   }
 };
 </script>

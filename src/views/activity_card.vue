@@ -4,9 +4,9 @@
     <main>
       <div class="prizeWheels" v-if="is_ok">
         <div v-for="(item,idx) in list" :key="idx" class="item" :class="['item' + idx ]">
-          <img :src="item.images" />
-          <!-- <span v-if="item.youhui_type == 1" class="item_text">￥{{item.return_money}}现金券</span>
-          <span v-if="item.youhui_type == 0" class="item_text">￥{{item.return_money}}兑换券</span>-->
+          <img :src="item.image" />
+          <span v-if="item.youhui_type == 1" class="item_text">￥{{item.return_money}}现金券</span>
+          <span v-if="item.youhui_type == 0" class="item_text">￥{{item.return_money}}兑换券</span>
           <!-- <span class="item_text">{{item.name}}</span> -->
           <span :class="item.active ? 'active' : 'active2'"></span>
         </div>
