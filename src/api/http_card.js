@@ -3,7 +3,6 @@ import qs from "qs"
 import { getToken } from "../utils/get_info"
 import { FETCH_OK, NOT_SIGN, NOT_FIND, SERVER_ERROR } from "../utils/global"
 import store from "../store/index"
-import { Toast } from "vant"
 const config = {
   baseURL: process.env.VUE_APP_CARD_API,
   timeout: 10000,

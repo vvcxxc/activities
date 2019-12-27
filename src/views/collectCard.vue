@@ -8,7 +8,7 @@
           trigger="click"
           direction="row"
           v-bind:closeContent="this.closeContent"
-          v-bind:data="this.testData"
+          v-bind:data="new_card"
         />
       </div>
     </div>
@@ -20,77 +20,89 @@
       </div>
       <div class="collectWordsContent">
         <!-- 小 :每种卡有（有收集，未收集）两种样式，有收集的右上角有收集张数小圆点-->
-        <div class="wordItem">
-          <img
-            class="words"
-            src="http://oss.tdianyi.com/front/Z7DdRBTpX7ETwnzsFkbQ8kPyEDjQZHdp.png"
-          />
-          <div class="smallNumIcon">1</div>
+        <div>
+          <div class="wordItem" v-if="card_list[0].num">
+            <img
+              class="words"
+              src="http://oss.tdianyi.com/front/Z7DdRBTpX7ETwnzsFkbQ8kPyEDjQZHdp.png"
+            />
+            <div class="smallNumIcon">{{card_list[0].num}}</div>
+          </div>
+          <div class="noWordItem" v-else>
+            <img
+              class="words"
+              src="http://oss.tdianyi.com/front/KiQEBEfRWXRcRMcRxN45TjSNibrbbF6z.png"
+            />
+          </div>
         </div>
-        <!-- <div class="noWordItem">
-          <img
-            class="words"
-            src="http://oss.tdianyi.com/front/KiQEBEfRWXRcRMcRxN45TjSNibrbbF6z.png"
-          />
-        </div>-->
+
         <!-- 熊 -->
-        <!-- <div class="wordItem">
-          <img
-            class="words"
-            src="http://oss.tdianyi.com/front/KASzpzRF3Xjjy34fnjjT3kJaE4EkRziB.png"
-          />
-          <div class="smallNumIcon">1</div>
-        </div>-->
-        <div class="noWordItem">
-          <img
-            class="words"
-            src="http://oss.tdianyi.com/front/yFDnkyCYDebb7BHw3CrmHBwxbaCh8TJD.png"
-          />
+        <div>
+          <div class="wordItem" v-if="card_list[1].num">
+            <img
+              class="words"
+              src="http://oss.tdianyi.com/front/KASzpzRF3Xjjy34fnjjT3kJaE4EkRziB.png"
+            />
+            <div class="smallNumIcon">{{card_list[1].num}}</div>
+          </div>
+          <div class="noWordItem" v-else>
+            <img
+              class="words"
+              src="http://oss.tdianyi.com/front/yFDnkyCYDebb7BHw3CrmHBwxbaCh8TJD.png"
+            />
+          </div>
         </div>
+
         <!-- 敬 -->
-        <!-- <div class="wordItem">
-          <img
-            class="words"
-            src="http://oss.tdianyi.com/front/xetnhGRjC6FCPfc353m2pYrQAyStGQjn.png"
-          />
-          <div class="smallNumIcon">1</div>
-        </div>-->
-        <div class="noWordItem">
-          <img
-            class="words"
-            src="http://oss.tdianyi.com/front/5KFwWtYk63bktEbf7W5hAyPRW6Qp6ayk.png"
-          />
+        <div>
+          <div class="wordItem" v-if="card_list[2].num">
+            <img
+              class="words"
+              src="http://oss.tdianyi.com/front/xetnhGRjC6FCPfc353m2pYrQAyStGQjn.png"
+            />
+            <div class="smallNumIcon">{{card_list[2].num}}</div>
+          </div>
+          <div class="noWordItem" v-else>
+            <img
+              class="words"
+              src="http://oss.tdianyi.com/front/5KFwWtYk63bktEbf7W5hAyPRW6Qp6ayk.png"
+            />
+          </div>
         </div>
+
         <!-- 礼 -->
-        <!-- <div class="wordItem">
-          <img
-            class="words"
-            src="http://oss.tdianyi.com/front/54sJNyaTeeG3djkXjw6cpkywShDaX5cK.png"
-          />
-          <div class="smallNumIcon">1</div>
-        </div>-->
-        <div class="noWordItem">
-          <img
-            class="words"
-            src="http://oss.tdianyi.com/front/dZSkeaRZcNWJZseQdNhFhWSpWMmteci6.png"
-          />
+        <div>
+          <div class="wordItem" v-if="card_list[3].num">
+            <img
+              class="words"
+              src="http://oss.tdianyi.com/front/54sJNyaTeeG3djkXjw6cpkywShDaX5cK.png"
+            />
+            <div class="smallNumIcon">{{card_list[3].num}}</div>
+          </div>
+          <div class="noWordItem" v-else>
+            <img
+              class="words"
+              src="http://oss.tdianyi.com/front/dZSkeaRZcNWJZseQdNhFhWSpWMmteci6.png"
+            />
+          </div>
         </div>
       </div>
     </div>
     <div class="missionBox">
-      <div class="missionItem">
-        <div class="missionItemMsg">
-          <div class="missionTitle">您已获得1份奖品</div>
-          <div class="missionInfo">首次获得每张卡片即可领取红包一份</div>
-        </div>
-        <div class="goToCheck">前往查看</div>
-      </div>
+      
       <div class="missionItem">
         <div class="missionItemMsg">
           <div class="missionTitle">抽取终极大奖</div>
           <div class="missionInfo">收集“小熊敬礼”4个字(3/4)</div>
         </div>
         <div class="goToFinish">去完成</div>
+      </div>
+      <div class="missionItem">
+        <div class="missionItemMsg">
+          <div class="missionTitle">查看我的奖品</div>
+          <div class="missionInfo">每次获取/集齐卡片均有机会抽取奖品</div>
+        </div>
+        <div class="goToCheck">前往查看</div>
       </div>
     </div>
     <div class="jackpotBox">
@@ -200,26 +212,84 @@
   </div>
 </template>
 <script>
-import { Loading, Dialog } from "vant";
 import rotate3DCard from "../component/rotate3DCard";
+import { getCardList, getNewCard } from "../api/api_card";
 export default {
   data() {
     return {
-      cardShow: true,
+      cardShow: false,
       // cardShow: false,
       message: {},
-      testData: { name: "小", ticket: "444444测试" }
+      testData: { name: "小", ticket: "444444测试" },
+      card_list: [{ num: 0 }, { num: 0 }, { num: 0 }, { num: 0 }],
+      timer: null,
+      times: null,
+      new_card: {}
     };
   },
   components: {
     rotate3DCard
   },
   watch: {},
-  created() {},
-  mounted() {},
+  created() {
+    this.getList();
+  },
+  mounted() {
+    this.isNewCard();
+  },
   methods: {
     closeContent() {
       this.cardShow = false;
+    },
+
+    // 获取卡片列表
+    getList() {
+      getCardList()
+        .then(res => {
+          if (res.status_code == 200) {
+            if (res.data.length) {
+              this.card_list = res.data;
+            }
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+
+    // 轮询判断是否有新卡
+    isHaveCard() {
+      this.timer = setTimeout(()=> {
+        getNewCard().then(res =>{
+          this.times ++;
+          if(res.data){
+            this.getList();
+            this.new_card = res.data
+            clearTimeout(this.timer)
+            this.cardShow = true
+          }else{
+            if(this.times < 5){
+              this.isHaveCard()
+            }else{
+              clearTimeout(this.timer)
+            }
+          }
+        })
+      }, 1000)
+    },
+
+    // 判断是否有新卡
+    isNewCard() {
+      getNewCard().then(res =>{
+          this.times ++;
+          if(res.data){
+            this.getList();
+            this.new_card = res.data
+            this.cardShow = true
+          }else{
+              this.isHaveCard()
+          }
+        })
     }
   },
   beforeDestroy() {

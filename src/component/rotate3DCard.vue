@@ -1,3 +1,195 @@
+
+<template>
+  <div class="card-3d">
+    <div class="card card-z" ref="cardz">
+      <div class="defaultCard">
+        <div class="cardWordBox">
+          <div class="cardKeyWord">
+            <!-- 四张图片对应抽到‘小熊敬礼’四个字 -->
+            <img
+              v-if="this._props.data.card_type_id == 1"
+              class="theWords"
+              src="http://oss.tdianyi.com/front/Z7DdRBTpX7ETwnzsFkbQ8kPyEDjQZHdp.png"
+            />
+            <img
+              v-else-if="this._props.data.card_type_id == 2"
+              class="theWords"
+              src="http://oss.tdianyi.com/front/KASzpzRF3Xjjy34fnjjT3kJaE4EkRziB.png"
+            />
+            <img
+              v-else-if="this._props.data.card_type_id == 3"
+              class="theWords"
+              src="http://oss.tdianyi.com/front/xetnhGRjC6FCPfc353m2pYrQAyStGQjn.png"
+            />
+            <img
+              v-else-if="this._props.data.card_type_id == 4"
+              class="theWords"
+              src="http://oss.tdianyi.com/front/54sJNyaTeeG3djkXjw6cpkywShDaX5cK.png"
+            />
+          </div>
+          <div class="cardInfoBox">
+            <div class="cardInfo">恭喜您获得“{{this._props.data.name}}”字卡一张，</div>
+            <div class="cardInfo">收集卡片可兑换豪礼哦！</div>
+          </div>
+        </div>
+        <div class="cardBtnBox">
+          <div class="acceptBtn" @click="eve_cardres_click">立即翻开</div>
+        </div>
+      </div>
+    </div>
+    <div :class="['card',direction=='row'?'card-f-y':'card-f-x']" ref="cardf">
+      <div class="openCard">
+        <div v-if="!is_thank">
+           <!-- 实物奖品 -->
+        <div class="ticketBox">
+          <div class="ticketTitle">商品券</div>
+          <!-- <div class="ticketTitle">华为p30一台</div> -->
+          <div class="ticketContentBox">
+            <div class="ticketImageBox">
+              <div class="physical">
+                <img
+                  class="physicalImg"
+                  src="http://oss.tdianyi.com/front/2R4XWYYRSyzGEayknYQd8FfEXtwQPtRy.png"
+                />
+                <div class="physicalMask">
+                  <div class="maskName">华为p30</div>
+                  <div class="maskPrice">价值3000元</div>
+                </div>
+              </div>
+            </div>
+            <div class="ticketStoreMsgBox">
+              <div class="storeName">领取地址：元气寿司店元气寿司店元气寿司店</div>
+              <div class="storeAddress">店铺地址：广东省广州市海珠区创意产业园广东省广州市海珠区创意产业园</div>
+            </div>
+          </div>
+          <div class="ticketMsg">可到店使用，免费兑换商品一份！</div>
+        </div>
+
+        <!-- 代金券 -->
+        <!-- <div class="ticketBox">
+          <div class="ticketTitle">100元代金券</div>
+          <div class="ticketContentBox">
+            <div class="ticketImageBox">
+              <div class="ticketImg">
+                <div class="realContent">
+                  <div class="priceBox">
+                    <div class="priceIcon">￥</div>
+                    <div class="priceNum">50.00</div>
+                  </div>
+                  <div class="totalBox">满100可用</div>
+                </div>
+              </div>
+            </div>
+            <div class="ticketStoreMsgBox">
+              <div class="storeName">领取地址：元气寿司店元气寿司店元气寿司店</div>
+              <div class="storeAddress">店铺地址：广东省广州市海珠区创意产业园广东省广州市海珠区创意产业园</div>
+            </div>
+          </div>
+          <div class="ticketMsg">到店使用，扫码支付可进行抵扣！</div>
+        </div>-->
+        </div>
+       
+
+        <div v-else>
+            <!-- 没中奖 -->
+        <div class="ticketBox" v-if="is_thank == 1">
+          <div class="noTicketBox">
+            <div class="notWinning"></div>
+            <div class="pity">好可惜</div>
+            <div class="pityMsg">与奖品擦肩而过了</div>
+          </div>
+        </div>
+
+        <!-- 没机会了 -->
+        <div class="ticketBox" v-else-if="is_thank == 2">
+          <div class="noTicketBox">
+            <div class="finish"></div>
+            <div class="pityMsg">今天集卡次数已达上限</div>
+            <div class="pityMsg">明天要再接再厉哦！</div>
+          </div>
+        </div>
+        </div>
+      
+        <div class="collectBtnBox">
+          <!-- 关闭遮罩，没做啥其他操作，就文案不同 -->
+          <div class="collectBtn" v-if="!is_thank" @click="this._props.closeContent">立即收下</div>
+          <div class="collectBtn" v-else @click="this._props.closeContent">关闭</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+import { getCardInfo } from "../api/api_card";
+export default {
+  props: {
+    //翻转触发方式
+    trigger: {
+      type: String,
+      default: "click" //默认点击触发
+    },
+    direction: {
+      //翻转方向 row col
+      type: String,
+      default: "row"
+    },
+    //关闭遮罩的函数
+    closeContent: {
+      type: Function
+    },
+    data: {
+      type: Object
+    }
+  },
+  data() {
+    return {
+      surface: true,
+      is_thank: 1
+    };
+  },
+  created() {
+    console.log("_props", this._props.data);
+  },
+  methods: {
+    fn_reserve_action(bool) {
+      var arr =
+        this.direction == "row"
+          ? ["rotateY(180deg)", "rotateY(0deg)"]
+          : ["rotateX(-180deg)", "rotateX(0deg)"];
+      this.$refs.cardz.style.transform = bool ? arr[0] : arr[1];
+      this.$refs.cardf.style.transform = !bool ? arr[0] : arr[1];
+    },
+    // 翻卡
+    eve_cardres_click() {
+      let data = {
+        supplier_location_id: 5008,
+        card_type_id: 1
+      }
+      getCardInfo(data).then(res => {
+        console.log(res);
+        if(res.status_code == 200){
+          this.is_thank = 0
+        }else if (res.status_code == 400){
+          // 谢谢惠顾
+          if(res.message.includes('机会')){
+            this.is_thank = 2
+          }else{
+            this.is_thank = 1
+          }
+          
+        }
+      });
+
+      if (this.surface) {
+        this.fn_reserve_action(this.surface);
+        this.surface = !this.surface;
+      } else {
+        console.log("翻过了");
+      }
+    }
+  }
+};
+</script>
 <style lang="stylus">
 .card-3d {
   width: 2.575rem;
@@ -22,7 +214,6 @@
       border-color: #eee;
     }
 
-
     &.card-f-y {
       transform: rotateY(-180deg);
     }
@@ -37,7 +228,6 @@
       background: url('http://oss.tdianyi.com/front/EzAkZYE2b4zsbQfkQjrrsAwC2hZeGWhp.png');
       background-size: 100% 100%;
       background-repeat: no-repeat;
-    
 
       .cardWordBox {
         height: 2.8rem;
@@ -158,14 +348,14 @@
 
                 .maskName {
                   font-size: 0.1rem;
-                  line-height :1;
+                  line-height: 1;
                   color: #fff;
                   height: 0.15rem;
                 }
 
                 .maskPrice {
                   font-size: 0.1rem;
-                  line-height :1;
+                  line-height: 1;
                   color: #fff;
                   height: 0.15rem;
                 }
@@ -338,154 +528,3 @@
   }
 }
 </style>
-<template>
-  <div class="card-3d">
-    <div class="card card-z" ref="cardz">
-      <div class="defaultCard">
-        <div class="cardWordBox">
-          <div class="cardKeyWord">
-            <!-- 四张图片对应抽到‘小熊敬礼’四个字 -->
-            <img
-              class="theWords"
-              src="http://oss.tdianyi.com/front/Z7DdRBTpX7ETwnzsFkbQ8kPyEDjQZHdp.png"
-            />
-            <!-- <img class="words" src="http://oss.tdianyi.com/front/KASzpzRF3Xjjy34fnjjT3kJaE4EkRziB.png" /> -->
-            <!-- <img class="words" src="http://oss.tdianyi.com/front/xetnhGRjC6FCPfc353m2pYrQAyStGQjn.png" /> -->
-            <!-- <img class="words" src="http://oss.tdianyi.com/front/54sJNyaTeeG3djkXjw6cpkywShDaX5cK.png" /> -->
-          </div>
-          <div class="cardInfoBox">
-            <div class="cardInfo">恭喜您获得“小”字卡一张，</div>
-            <div class="cardInfo">收集卡片可兑换豪礼哦！</div>
-          </div>
-        </div>
-        <div class="cardBtnBox">
-          <div class="acceptBtn" @click="eve_cardres_click">立即翻开</div>
-        </div>
-      </div>
-    </div>
-    <div :class="['card',direction=='row'?'card-f-y':'card-f-x']" ref="cardf">
-      <div class="openCard">
-        <!-- 实物奖品 -->
-        <div class="ticketBox">
-          <div class="ticketTitle">商品券</div>
-          <!-- <div class="ticketTitle">华为p30一台</div> -->
-          <div class="ticketContentBox">
-            <div class="ticketImageBox">
-              <div class="physical">
-                <img
-                  class="physicalImg"
-                  src="http://oss.tdianyi.com/front/2R4XWYYRSyzGEayknYQd8FfEXtwQPtRy.png"
-                />
-                <div class="physicalMask">
-                  <div class="maskName">华为p30</div>
-                  <div class="maskPrice">价值3000元</div>
-                </div>
-              </div>
-            </div>
-            <div class="ticketStoreMsgBox">
-              <div class="storeName">领取地址：元气寿司店元气寿司店元气寿司店</div>
-              <div class="storeAddress">店铺地址：广东省广州市海珠区创意产业园广东省广州市海珠区创意产业园</div>
-            </div>
-          </div>
-          <div class="ticketMsg">可到店使用，免费兑换商品一份！</div>
-          <!-- <div class="ticketMsg">前往指定地址，进行兑换领取！</div> -->
-        </div>
-
-        <!-- 代金券 -->
-        <!-- <div class="ticketBox">
-          <div class="ticketTitle">100元代金券</div>
-          <div class="ticketContentBox">
-            <div class="ticketImageBox">
-              <div class="ticketImg">
-                <div class="realContent">
-                  <div class="priceBox">
-                    <div class="priceIcon">￥</div>
-                    <div class="priceNum">50.00</div>
-                  </div>
-                  <div class="totalBox">满100可用</div>
-                </div>
-              </div>
-            </div>
-            <div class="ticketStoreMsgBox">
-              <div class="storeName">领取地址：元气寿司店元气寿司店元气寿司店</div>
-              <div class="storeAddress">店铺地址：广东省广州市海珠区创意产业园广东省广州市海珠区创意产业园</div>
-            </div>
-          </div>
-          <div class="ticketMsg">到店使用，扫码支付可进行抵扣！</div>
-        </div>-->
-
-        <!-- 没中奖 -->
-        <!-- <div class="ticketBox">
-          <div class="noTicketBox">
-            <div class="notWinning"></div>
-            <div class="pity">好可惜</div>
-            <div class="pityMsg">与奖品擦肩而过了</div>
-          </div>
-        </div>-->
-
-        <!-- 没机会了 -->
-        <!-- <div class="ticketBox">
-          <div class="noTicketBox">
-            <div class="finish"></div>
-            <div class="pityMsg">今天集卡次数已达上限</div>
-            <div class="pityMsg">明天要再接再厉哦！</div>
-          </div>
-        </div>-->
-        <div class="collectBtnBox">
-          <!-- 关闭遮罩，没做啥其他操作，就文案不同 -->
-          <div class="collectBtn" @click="this._props.closeContent">立即收下</div>
-          <!-- <div class="collectBtn" @click="this._props.closeContent">关闭</div> -->
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-<script>
-export default {
-  props: {
-    //翻转触发方式
-    trigger: {
-      type: String,
-      default: "click" //默认点击触发
-    },
-    direction: {
-      //翻转方向 row col
-      type: String,
-      default: "row"
-    },
-    //关闭遮罩的函数
-    closeContent: {
-      type: Function
-    },
-    testData: {
-      type: Object
-    }
-  },
-  data() {
-    return {
-      surface: true
-    };
-  },
-  created() {
-    console.log("_props", this._props.testData);
-  },
-  methods: {
-    fn_reserve_action(bool) {
-      var arr =
-        this.direction == "row"
-          ? ["rotateY(180deg)", "rotateY(0deg)"]
-          : ["rotateX(-180deg)", "rotateX(0deg)"];
-      this.$refs.cardz.style.transform = bool ? arr[0] : arr[1];
-      this.$refs.cardf.style.transform = !bool ? arr[0] : arr[1];
-    },
-    eve_cardres_click() {
-      if (this.surface) {
-        this.fn_reserve_action(this.surface);
-        this.surface = !this.surface;
-      } else {
-        console.log("翻过了");
-      }
-    }
-  }
-};
-</script>

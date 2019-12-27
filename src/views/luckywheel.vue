@@ -26,7 +26,10 @@
             </div>
           </div>
         </div>
-        <div class="timesBox">剩余次数：{{this.lottery_ticket}}次</div>
+        <div class="timesBox">
+          剩余次数：{{this.lottery_ticket}}次
+          <div class="button">按钮</div>
+        </div>
       </div>
     </div>
     <div class="introduceBox">
@@ -453,6 +456,20 @@ export default {
   font-size: 0.15rem;
   font-weight: bold;
   color: rgba(239, 209, 183, 1);
+}
+.button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* width: .4rem; */
+  padding: 0 .1rem;
+  border-radius: 4px;
+  height: .2rem;
+  background: #fff;
+  right: .6rem;
 }
 
 .introduceBox {
