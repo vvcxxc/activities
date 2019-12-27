@@ -9,6 +9,8 @@
           direction="row"
           v-bind:closeContent="this.closeContent"
           v-bind:data="new_card"
+          :info="info"
+          :is_thank='is_thank'
         />
       </div>
     </div>
@@ -89,13 +91,12 @@
       </div>
     </div>
     <div class="missionBox">
-      
       <div class="missionItem">
         <div class="missionItemMsg">
           <div class="missionTitle">抽取终极大奖</div>
           <div class="missionInfo">收集“小熊敬礼”4个字(3/4)</div>
         </div>
-        <div class="goToFinish">去完成</div>
+        <div class="goToFinish" @click="gotoLuckyWheel">抽取大奖</div>
       </div>
       <div class="missionItem">
         <div class="missionItemMsg">
@@ -213,24 +214,49 @@
 </template>
 <script>
 import rotate3DCard from "../component/rotate3DCard";
-import { getCardList, getNewCard } from "../api/api_card";
+import { getCardList, getNewCard, getCardInfo } from "../api/api_card";
 export default {
   data() {
     return {
       cardShow: false,
       // cardShow: false,
       message: {},
-      testData: { name: "小", ticket: "444444测试" },
       card_list: [{ num: 0 }, { num: 0 }, { num: 0 }, { num: 0 }],
       timer: null,
       times: null,
-      new_card: {}
+      new_card: {},
+      is_thank: 3,
+      info: {} // 卡片背面的信息
     };
   },
   components: {
     rotate3DCard
   },
-  watch: {},
+  watch: {
+    new_card: function(newVal) {
+      if (newVal) {
+        let data = {
+          supplier_location_id: 5008,
+          card_type_id: newVal.card_type_id
+        };
+        getCardInfo(data).then(res => {
+          if (res.status_code == 200) {
+            this.is_thank = 0;
+            this.info = res.data;
+          } else if (res.status_code == 400) {
+            // 谢谢惠顾
+            if (res.message.includes("机会")) {
+              this.is_thank = 2;
+            } else {
+              this.is_thank = 1;
+            }
+          }
+        }).catch(err => {
+          this.is_thank = 1
+        });
+      }
+    }
+  },
   created() {
     this.getList();
   },
@@ -240,6 +266,12 @@ export default {
   methods: {
     closeContent() {
       this.cardShow = false;
+
+    },
+
+    // 去抽大奖
+    gotoLuckyWheel() {
+      this.$router.push({name: 'luckywheel'})
     },
 
     // 获取卡片列表
@@ -259,37 +291,37 @@ export default {
 
     // 轮询判断是否有新卡
     isHaveCard() {
-      this.timer = setTimeout(()=> {
-        getNewCard().then(res =>{
-          this.times ++;
-          if(res.data){
+      this.timer = setTimeout(() => {
+        getNewCard().then(res => {
+          this.times++;
+          if (res.data) {
             this.getList();
-            this.new_card = res.data
-            clearTimeout(this.timer)
-            this.cardShow = true
-          }else{
-            if(this.times < 5){
-              this.isHaveCard()
-            }else{
-              clearTimeout(this.timer)
+            this.new_card = res.data;
+            clearTimeout(this.timer);
+            this.cardShow = true;
+          } else {
+            if (this.times < 5) {
+              this.isHaveCard();
+            } else {
+              clearTimeout(this.timer);
             }
           }
-        })
-      }, 1000)
+        });
+      }, 1000);
     },
 
     // 判断是否有新卡
     isNewCard() {
-      getNewCard().then(res =>{
-          this.times ++;
-          if(res.data){
-            this.getList();
-            this.new_card = res.data
-            this.cardShow = true
-          }else{
-              this.isHaveCard()
-          }
-        })
+      getNewCard().then(res => {
+        this.times++;
+        if (res.data) {
+          this.getList();
+          this.new_card = res.data;
+          this.cardShow = true;
+        } else {
+          this.isHaveCard();
+        }
+      });
     }
   },
   beforeDestroy() {

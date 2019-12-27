@@ -41,52 +41,51 @@
       <div class="openCard">
         <div v-if="!is_thank">
            <!-- 实物奖品 -->
-        <div class="ticketBox">
+        <div class="ticketBox" v-if="info.youhui_type == 0">
           <div class="ticketTitle">商品券</div>
-          <!-- <div class="ticketTitle">华为p30一台</div> -->
           <div class="ticketContentBox">
             <div class="ticketImageBox">
               <div class="physical">
                 <img
                   class="physicalImg"
-                  src="http://oss.tdianyi.com/front/2R4XWYYRSyzGEayknYQd8FfEXtwQPtRy.png"
+                  :src='"http://oss.tdianyi.com/"+info.coupon_image'
                 />
                 <div class="physicalMask">
-                  <div class="maskName">华为p30</div>
-                  <div class="maskPrice">价值3000元</div>
+                  <div class="maskName">{{info.coupon_name}}</div>
+                  <div class="maskPrice">价值{{info.return_money}}元</div>
                 </div>
               </div>
             </div>
             <div class="ticketStoreMsgBox">
-              <div class="storeName">领取地址：元气寿司店元气寿司店元气寿司店</div>
-              <div class="storeAddress">店铺地址：广东省广州市海珠区创意产业园广东省广州市海珠区创意产业园</div>
+              <div class="storeName">领取地址：{{info.store_name}}</div>
+              <div class="storeAddress">店铺地址：{{info.store_address}}</div>
             </div>
           </div>
           <div class="ticketMsg">可到店使用，免费兑换商品一份！</div>
         </div>
 
         <!-- 代金券 -->
-        <!-- <div class="ticketBox">
-          <div class="ticketTitle">100元代金券</div>
+        <div class="ticketBox" v-else-if="info.youhui_type == 1">
+          <div class="ticketTitle">{{info.coupon_name}}</div>
           <div class="ticketContentBox">
             <div class="ticketImageBox">
               <div class="ticketImg">
                 <div class="realContent">
                   <div class="priceBox">
                     <div class="priceIcon">￥</div>
-                    <div class="priceNum">50.00</div>
+                    <div class="priceNum">{{info.return_money}}</div>
                   </div>
-                  <div class="totalBox">满100可用</div>
+                  <div class="totalBox">满{{info.total_fee}}可用</div>
                 </div>
               </div>
             </div>
             <div class="ticketStoreMsgBox">
-              <div class="storeName">领取地址：元气寿司店元气寿司店元气寿司店</div>
-              <div class="storeAddress">店铺地址：广东省广州市海珠区创意产业园广东省广州市海珠区创意产业园</div>
+              <div class="storeName">领取地址：{{info.store_name}}</div>
+              <div class="storeAddress">店铺地址：{{info.store_address}}</div>
             </div>
           </div>
           <div class="ticketMsg">到店使用，扫码支付可进行抵扣！</div>
-        </div>-->
+        </div>
         </div>
        
 
@@ -97,6 +96,12 @@
             <div class="notWinning"></div>
             <div class="pity">好可惜</div>
             <div class="pityMsg">与奖品擦肩而过了</div>
+          </div>
+        </div>
+
+        <div class="ticketBox" v-if="is_thank == 3">
+          <div class="ticket_text">
+            奖品搜索中...
           </div>
         </div>
 
@@ -139,12 +144,17 @@ export default {
     },
     data: {
       type: Object
+    },
+    info: {
+      type: Object
+    },
+    is_thank: {
+      type: Number
     }
   },
   data() {
     return {
       surface: true,
-      is_thank: 1
     };
   },
   created() {
@@ -161,26 +171,7 @@ export default {
     },
     // 翻卡
     eve_cardres_click() {
-      let data = {
-        supplier_location_id: 5008,
-        card_type_id: 1
-      }
-      getCardInfo(data).then(res => {
-        console.log(res);
-        if(res.status_code == 200){
-          this.is_thank = 0
-        }else if (res.status_code == 400){
-          // 谢谢惠顾
-          if(res.message.includes('机会')){
-            this.is_thank = 2
-          }else{
-            this.is_thank = 1
-          }
-          
-        }
-      });
-
-      if (this.surface) {
+       if (this.surface) {
         this.fn_reserve_action(this.surface);
         this.surface = !this.surface;
       } else {
@@ -295,6 +286,15 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: center;
+
+        .ticket_text {
+          width 100%
+          height 100%
+          display flex
+          align-items center
+          justify-content center
+          color #fff
+        }
 
         .ticketTitle {
           margin-top: 0.35rem;
