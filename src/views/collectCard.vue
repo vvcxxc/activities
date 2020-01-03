@@ -1,5 +1,8 @@
 <template>
   <div class="collectCard">
+    <div class="collectCardLoading" v-if="showLoading">
+      <van-loading type="spinner" color="#1989fa" class="collectCardLoadingIcon" />
+    </div>
     <div class="rulesShowButton"></div>
     <div class="cardMask" v-if="cardShow">
       <div class="cardContent">
@@ -10,7 +13,7 @@
           v-bind:closeContent="this.closeContent"
           v-bind:data="new_card"
           :info="info"
-          :is_thank='is_thank'
+          :is_thank="is_thank"
         />
       </div>
     </div>
@@ -93,116 +96,72 @@
     <div class="missionBox">
       <div class="missionItem">
         <div class="missionItemMsg">
-          <div class="missionTitle">抽取终极大奖</div>
-          <div class="missionInfo">收集“小熊敬礼”4个字(3/4)</div>
+          <div class="missionTitle">你已获得{{card_num}}份奖品</div>
+          <div class="missionInfo">首次获得每张卡片即可领取红包一份</div>
         </div>
-        <div class="goToFinish" @click="gotoLuckyWheel">抽取大奖</div>
+        <div class="goToCheck">前往查看</div>
       </div>
       <div class="missionItem">
         <div class="missionItemMsg">
-          <div class="missionTitle">查看我的奖品</div>
-          <div class="missionInfo">每次获取/集齐卡片均有机会抽取奖品</div>
+          <div class="missionTitle">抽取终极大奖</div>
+          <div class="missionInfo">收集“小熊敬礼”4个字({{collectNum}}/4)</div>
         </div>
-        <div class="goToCheck">前往查看</div>
+        <div class="goToFinish" @click="gotoLuckyWheel">抽取大奖</div>
       </div>
     </div>
     <div class="jackpotBox">
       <div class="changeJackpotBox">
-        <div class="changeJackpotBtn">换一批</div>
+        <div class="changeJackpotBtn" @click="getBottomCardList">换一批</div>
       </div>
       <div class="changeJackpotContent">
         <div class="changeJackpotItemBox">
-          <!-- 111111111111111? -->
           <div class="ticketContentBox">
             <div class="ticketCrown"></div>
             <div class="ticketImageBox">
               <div class="physical">
-                <img
-                  class="physicalImg"
-                  src="http://oss.tdianyi.com/front/2R4XWYYRSyzGEayknYQd8FfEXtwQPtRy.png"
-                />
+                <img class="physicalImg" :src="bottomPrizeList.image" />
                 <div class="physicalMask">
-                  <div class="maskName">华为p30</div>
-                  <div class="maskPrice">价值3000元</div>
+                  <div class="maskName">{{bottomPrizeList.name}}</div>
+                  <div class="maskPrice">价值{{bottomPrizeList.market_price}}元</div>
                 </div>
               </div>
             </div>
             <div class="ticketStoreMsgBox">
-              <div class="storeName">领取地址：元气寿司店元气寿司店元气寿司店</div>
-              <div class="storeAddress">店铺地址：广东省广州市海珠区创意产业园广东省广州市海珠区创意产业园</div>
+              <div class="storeName">领取地址：{{bottomPrizeList.shop_name}}</div>
+              <div class="storeAddress">店铺地址：{{bottomPrizeList.address}}</div>
             </div>
           </div>
-          <!-- 111111111111111? -->
         </div>
-        <div class="changeJackpotItemBox">
-          <!-- 111111111111111? -->
+
+        <div class="changeJackpotItemBox" v-for="(item,idx) in bottomYouhuiList" :key="idx">
           <div class="ticketContentBox">
-            <div class="ticketCrown"></div>
-            <div class="ticketImageBox">
+            <div class="ticketImageBox" v-if="item.youhui_type==0">
               <div class="physical">
-                <img
-                  class="physicalImg"
-                  src="http://oss.tdianyi.com/front/2R4XWYYRSyzGEayknYQd8FfEXtwQPtRy.png"
-                />
+                <img class="physicalImg" :src="item.icon" />
                 <div class="physicalMask">
-                  <div class="maskName">华为p30</div>
+                  <div class="maskName">{{item.youhui_name}}</div>
                   <div class="maskPrice">价值3000元</div>
                 </div>
               </div>
             </div>
-            <div class="ticketStoreMsgBox">
-              <div class="storeName">领取地址：元气寿司店元气寿司店元气寿司店</div>
-              <div class="storeAddress">店铺地址：广东省广州市海珠区创意产业园广东省广州市海珠区创意产业园</div>
-            </div>
-          </div>
-          <!-- 111111111111111? -->
-        </div>
-        <div class="changeJackpotItemBox">
-          <!-- 111111111111111? -->
-          <div class="ticketContentBox">
-            <div class="ticketCrown"></div>
-            <div class="ticketImageBox">
-              <div class="physical">
-                <img
-                  class="physicalImg"
-                  src="http://oss.tdianyi.com/front/2R4XWYYRSyzGEayknYQd8FfEXtwQPtRy.png"
-                />
-                <div class="physicalMask">
-                  <div class="maskName">华为p30</div>
-                  <div class="maskPrice">价值3000元</div>
-                </div>
-              </div>
-            </div>
-            <div class="ticketStoreMsgBox">
-              <div class="storeName">领取地址：元气寿司店元气寿司店元气寿司店</div>
-              <div class="storeAddress">店铺地址：广东省广州市海珠区创意产业园广东省广州市海珠区创意产业园</div>
-            </div>
-          </div>
-          <!-- 111111111111111? -->
-        </div>
-        <div class="changeJackpotItemBox">
-          <!-- 111111111111111? -->
-          <div class="ticketContentBox">
-            <div class="ticketCrown"></div>
-            <div class="ticketImageBox">
+            <div class="ticketImageBox" v-if="item.youhui_type==1">
               <div class="ticketBackground">
                 <div class="ticketImg">
                   <div class="realContent">
                     <div class="priceBox">
                       <div class="priceIcon">￥</div>
-                      <div class="priceNum">50.00</div>
+                      <div class="priceNum">{{item.return_money}}</div>
                     </div>
-                    <div class="totalBox">满100可用</div>
+                    <div class="totalBox">满{{item.total_fee}}可用</div>
                   </div>
                 </div>
               </div>
             </div>
             <div class="ticketStoreMsgBox">
-              <div class="storeName">领取地址：元气寿司店元气寿司店元气寿司店</div>
-              <div class="storeAddress">店铺地址：广东省广州市海珠区创意产业园广东省广州市海珠区创意产业园</div>
+              <div class="storeName">领取地址：{{item.shop_name}}</div>
+              <div class="storeAddress">店铺地址：{{item.address}}</div>
             </div>
           </div>
-          <!-- 111111111111111? -->
         </div>
       </div>
     </div>
@@ -215,18 +174,28 @@
 <script>
 import rotate3DCard from "../component/rotate3DCard";
 import { getCardList, getNewCard, getCardInfo } from "../api/api_card";
+import { getCardListNum, getCardPriceList } from "../api/api";
+import Vue from "vue";
+import { Loading } from "vant";
+Vue.use(Loading);
 export default {
   data() {
     return {
+      showLoading: false,
       cardShow: false,
       // cardShow: false,
       message: {},
       card_list: [{ num: 0 }, { num: 0 }, { num: 0 }, { num: 0 }],
+      collectNum: 0,
       timer: null,
       times: null,
       new_card: {},
       is_thank: 3,
-      info: {} // 卡片背面的信息
+      info: {}, // 卡片背面的信息
+      card_num: 0,
+      //底部列表，1奖品3券
+      bottomPrizeList: {},
+      bottomYouhuiList: [{}, {}, {}]
     };
   },
   components: {
@@ -239,26 +208,30 @@ export default {
           supplier_location_id: 5008,
           card_type_id: newVal.card_type_id
         };
-        getCardInfo(data).then(res => {
-          if (res.status_code == 200) {
-            this.is_thank = 0;
-            this.info = res.data;
-          } else if (res.status_code == 400) {
-            // 谢谢惠顾
-            if (res.message.includes("机会")) {
-              this.is_thank = 2;
-            } else {
-              this.is_thank = 1;
+        getCardInfo(data)
+          .then(res => {
+            if (res.status_code == 200) {
+              this.is_thank = 0;
+              this.info = res.data;
+            } else if (res.status_code == 400) {
+              // 谢谢惠顾
+              if (res.message.includes("机会")) {
+                this.is_thank = 2;
+              } else {
+                this.is_thank = 1;
+              }
             }
-          }
-        }).catch(err => {
-          this.is_thank = 1
-        });
+          })
+          .catch(err => {
+            this.is_thank = 1;
+          });
       }
     }
   },
   created() {
     this.getList();
+    this.getCardNum();
+    this.getBottomCardList();
   },
   mounted() {
     this.isNewCard();
@@ -266,14 +239,30 @@ export default {
   methods: {
     closeContent() {
       this.cardShow = false;
-
     },
 
     // 去抽大奖
     gotoLuckyWheel() {
-      this.$router.push({name: 'luckywheel'})
+      this.$router.push({ name: "luckywheel" });
     },
-
+    // 获取底部列表
+    getBottomCardList() {
+      if (this.showLoading == false) {
+        this.showLoading = true;
+        getCardPriceList(73)
+          .then(res => {
+            this.showLoading = false;
+            if (res.code == 200) {
+              this.bottomPrizeList = res.data.prize;
+              this.bottomYouhuiList = res.data.youhui;
+            }
+          })
+          .catch(err => {
+            this.showLoading = false;
+            console.log(err);
+          });
+      }
+    },
     // 获取卡片列表
     getList() {
       getCardList()
@@ -281,6 +270,13 @@ export default {
           if (res.status_code == 200) {
             if (res.data.length) {
               this.card_list = res.data;
+              let collectNum = 0;
+              for (let i in res.data) {
+                if (res.data[i].num > 0) {
+                  collectNum = collectNum + 1;
+                }
+              }
+              this.collectNum = collectNum;
             }
           }
         })
@@ -288,7 +284,17 @@ export default {
           console.log(err);
         });
     },
-
+    getCardNum() {
+      getCardListNum()
+        .then(res => {
+          if (res.code == 200) {
+            this.card_num = res.data.count;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     // 轮询判断是否有新卡
     isHaveCard() {
       this.timer = setTimeout(() => {
@@ -344,6 +350,20 @@ export default {
   flex-direction: column;
   align-items: center;
   position: relative;
+
+  .collectCardLoading {
+    width: 0.2rem;
+    height: 0.2rem;
+    position: fixed;
+    z-index: 10;
+    left: 50%;
+    top: 50%;
+    margin-left: -0.1rem;
+    margin-top: -0.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   .rulesShowButton {
     width: 0.5rem;
@@ -526,7 +546,9 @@ export default {
       .goToCheck {
         width: 0.775rem;
         height: 0.295rem;
-        line-height: 0.3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 0.13rem;
         text-align: center;
         color: rgba(254, 110, 35, 1);
@@ -539,7 +561,9 @@ export default {
       .goToFinish {
         width: 0.775rem;
         height: 0.295rem;
-        line-height: 0.3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 0.13rem;
         text-align: center;
         color: #fff;
@@ -569,7 +593,9 @@ export default {
       .changeJackpotBtn {
         width: 0.64rem;
         height: 0.25rem;
-        line-height: 0.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         border-radius: 0.125rem;
         box-sizing: border-box;
         text-align: center;

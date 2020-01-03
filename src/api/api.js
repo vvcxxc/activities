@@ -148,3 +148,21 @@ export const getActivityPrizeNum = () =>
     url: 'v3/Lotterys/lucky_draw_number',
     method: 'get',
   });
+
+/**
+*获取集卡数
+*/
+export const getCardListNum = () =>
+  http({
+    url: 'v3/Lotterys/user_card_list',
+    method: 'get',
+  });
+
+/**
+*获取奖品列表
+*/
+export const getCardPriceList = (area_id) =>
+  http({
+    url: 'v3/getPoolsInfo/' + area_id,
+    method: 'get',
+  });

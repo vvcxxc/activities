@@ -30,3 +30,4 @@ export const delCard = () =>
         url: 'list/del',
         method: 'delete'
     })
+

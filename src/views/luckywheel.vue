@@ -150,7 +150,7 @@ import {
   getCityLoveResult,
   getActivityPrizeNum
 } from "../api/api";
-import { delCard } from '../api/api_card'
+import { delCard } from "../api/api_card";
 import Vue from "vue";
 import { Loading, Toast } from "vant";
 Vue.use(Loading);
@@ -174,7 +174,7 @@ export default {
       rotate_transition_pointer: "transform 12s ease-in-out", //初始化指针过度属性控制
       click_flag: true, //是否可以旋转抽奖，函数防抖
       index: 0, //转到的下标
-      number_change_toast: false, // 兑换次数弹窗
+      number_change_toast: false // 兑换次数弹窗
     };
   },
   mounted() {
@@ -198,29 +198,29 @@ export default {
   },
   methods: {
     // 领取奖品
-    getPrize () {
-      console.log('123')
-      window.location.href = process.env.VUE_APP_PRIZE
+    getPrize() {
+      console.log("123");
+      window.location.href = process.env.VUE_APP_PRIZE;
     },
 
     //  打开兑换次数窗口
-    openChangeNum (){
-      this.number_change_toast = true
+    openChangeNum() {
+      this.number_change_toast = true;
     },
     //  兑换次数
-    changeTheNum (){
-      this.number_change_toast = false
+    changeTheNum() {
+      this.number_change_toast = false;
       delCard().then(res => {
-        console.log(res)
-        if(res.status_code == 200){
+        console.log(res);
+        if (res.status_code == 200) {
           // 消卡成功，重新请求抽奖次数
-          this.getNum()
-          Toast('兑换成功')
-        }else {
+          this.getNum();
+          Toast("兑换成功");
+        } else {
           // 消卡失败
-          Toast('卡片不足');
+          Toast("卡片不足");
         }
-      })
+      });
     },
 
     async getData() {
@@ -235,7 +235,7 @@ export default {
       getActivityPrizeNum()
         .then(res => {
           if (res.code == 200 && res.data && res.data.luckyDrawNumber) {
-            this.lottery_ticket = res.data.luckyDrawNumber;
+            this.lottery_ticket = Number(res.data.luckyDrawNumber);
           } else {
             Toast(res.message);
           }
@@ -262,11 +262,9 @@ export default {
               if (res.data && res.data.win_id) {
                 //有结果
                 for (let i in this.prize_list) {
-                  if (
-                    (this.prize_list[i].activity_prize_id == res.data.win_id)
-                  ) {
+                  if (this.prize_list[i].activity_prize_id == res.data.win_id) {
                     winIndex = Number(i);
-                    console.log(winIndex)
+                    console.log(winIndex);
                     if (this.prize_list[i].name.indexOf("谢谢参与") == -1) {
                       this.winPrice = true;
                     } else {
@@ -340,7 +338,7 @@ export default {
     },
     // 关闭兑换次数弹窗
     close_number_toast() {
-      this.number_change_toast = false
+      this.number_change_toast = false;
     }
   }
 };
@@ -506,13 +504,13 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  border:1px solid rgba(239,209,183,1);
-  padding: 0 .06rem;
+  border: 1px solid rgba(239, 209, 183, 1);
+  padding: 0 0.06rem;
   border-radius: 20px;
-  font-size: .11rem;
-  color: #EFD1B7;
-  height: .2rem;
-  right: .7rem;
+  font-size: 0.11rem;
+  color: #efd1b7;
+  height: 0.2rem;
+  right: 0.7rem;
 }
 
 .introduceBox {
@@ -638,38 +636,42 @@ export default {
   width: 100%;
   height: 2.2rem;
   position: relative;
-  background: url('../assets/alert.png') no-repeat;
-  background-size: 100%
+  background: url("../assets/alert.png") no-repeat;
+  background-size: 100%;
 }
 .number-change-text {
-  margin-top: .96rem;
-  font-size: .13rem;
-  color: #FE6E23;
+  margin-top: 0.96rem;
+  font-size: 0.13rem;
+  color: #fe6e23;
   text-align: center;
-  margin-bottom: .3rem;
+  margin-bottom: 0.3rem;
 }
 .number-change-buttom {
   display: flex;
-  justify-content: center
+  justify-content: center;
 }
 .number-change-buttom div {
-  height: .38rem;
+  height: 0.38rem;
   width: 1rem;
-  border-radius:38px;
+  border-radius: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: .17rem;
+  font-size: 0.17rem;
 }
 .change-confirm {
-  background:linear-gradient(0deg,rgba(255,99,18,1) 0%,rgba(254,110,35,1) 100%);
+  background: linear-gradient(
+    0deg,
+    rgba(255, 99, 18, 1) 0%,
+    rgba(254, 110, 35, 1) 100%
+  );
   color: #fff;
 }
 .change-cancel {
-  border:1px solid rgba(255,105,28,1);
-  border-radius:38px;
-  color: #FE6C20;
-  margin-left: .07rem;
+  border: 1px solid rgba(255, 105, 28, 1);
+  border-radius: 38px;
+  color: #fe6c20;
+  margin-left: 0.07rem;
 }
 
 .toast-content {
