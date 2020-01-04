@@ -205,7 +205,7 @@ export default {
     new_card: function(newVal) {
       if (newVal) {
         let data = {
-          supplier_location_id: 5008,
+          supplier_location_id: this.$route.query.store_id,
           card_type_id: newVal.card_type_id
         };
         getCardInfo(data)
@@ -252,7 +252,7 @@ export default {
     getBottomCardList() {
       if (this.showLoading == false) {
         this.showLoading = true;
-        getCardPriceList(73)
+        getCardPriceList(this.$route.query.area_id)
           .then(res => {
             this.showLoading = false;
             if (res.code == 200) {
