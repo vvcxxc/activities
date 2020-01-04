@@ -255,9 +255,11 @@ export default {
         getCardPriceList(this.$route.query.area_id)
           .then(res => {
             this.showLoading = false;
-            if (res.code == 200) {
+            if (res.code == 200 && res.data.prize && res.data.youhui) {
               this.bottomPrizeList = res.data.prize;
               this.bottomYouhuiList = res.data.youhui;
+            } else {
+              console.log("err", res.data);
             }
           })
           .catch(err => {
