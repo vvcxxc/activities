@@ -99,7 +99,7 @@
           <div class="missionTitle">你已获得{{card_num}}份奖品</div>
           <div class="missionInfo">首次获得每张卡片即可领取红包一份</div>
         </div>
-        <div class="goToCheck">前往查看</div>
+        <div class="goToCheck" @click="getPrize">前往查看</div>
       </div>
       <div class="missionItem">
         <div class="missionItemMsg">
@@ -140,7 +140,7 @@
                 <img class="physicalImg" :src="item.icon" />
                 <div class="physicalMask">
                   <div class="maskName">{{item.youhui_name}}</div>
-                  <div class="maskPrice">价值3000元</div>
+                  <div class="maskPrice">价值{{item.return_money}}元</div>
                 </div>
               </div>
             </div>
@@ -240,7 +240,10 @@ export default {
     closeContent() {
       this.cardShow = false;
     },
-
+    // 领取奖品
+    getPrize() {
+      window.location.href = process.env.VUE_APP_PRIZE;
+    },
     // 去抽大奖
     gotoLuckyWheel() {
       this.$router.push({ name: "luckywheel" });
