@@ -220,6 +220,8 @@ export default {
               } else {
                 this.is_thank = 1;
               }
+            }else{
+              this.is_thank = 1
             }
           })
           .catch(err => {
