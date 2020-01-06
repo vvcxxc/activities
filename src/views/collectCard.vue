@@ -335,6 +335,7 @@ export default {
               this.cardShow = true;
             } else {
               this.noChanceShow = true;
+              clearTimeout(this.timer);
             }
           } else {
             if (this.times < 5) {
