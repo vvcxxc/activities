@@ -708,7 +708,7 @@ export default {
   width: 2.375rem;
   line-height: 1.2;
   text-align: center;
-  font-size: 0.13;
+  font-size: 0.13rem;
   font-weight: bold;
   color: rgba(254, 110, 35, 1);
 }
