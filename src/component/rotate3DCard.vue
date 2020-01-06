@@ -125,7 +125,6 @@
   </div>
 </template>
 <script>
-import { getCardInfo } from "../api/api_card";
 export default {
   props: {
     //翻转触发方式
