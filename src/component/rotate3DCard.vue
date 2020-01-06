@@ -40,81 +40,75 @@
     <div :class="['card',direction=='row'?'card-f-y':'card-f-x']" ref="cardf">
       <div class="openCard">
         <div v-if="!is_thank">
-           <!-- 实物奖品 -->
-        <div class="ticketBox" v-if="info.youhui_type == 0">
-          <div class="ticketTitle">商品券</div>
-          <div class="ticketContentBox">
-            <div class="ticketImageBox">
-              <div class="physical">
-                <img
-                  class="physicalImg"
-                  :src='"http://oss.tdianyi.com/"+info.coupon_image'
-                />
-                <div class="physicalMask">
-                  <div class="maskName">{{info.coupon_name}}</div>
-                  <div class="maskPrice">价值{{info.return_money}}元</div>
-                </div>
-              </div>
-            </div>
-            <div class="ticketStoreMsgBox">
-              <div class="storeName">领取地址：{{info.store_name}}</div>
-              <div class="storeAddress">店铺地址：{{info.store_address}}</div>
-            </div>
-          </div>
-          <div class="ticketMsg">可到店使用，免费兑换商品一份！</div>
-        </div>
-
-        <!-- 代金券 -->
-        <div class="ticketBox" v-else-if="info.youhui_type == 1">
-          <div class="ticketTitle">{{info.coupon_name}}</div>
-          <div class="ticketContentBox">
-            <div class="ticketImageBox">
-              <div class="ticketImg">
-                <div class="realContent">
-                  <div class="priceBox">
-                    <div class="priceIcon">￥</div>
-                    <div class="priceNum">{{info.return_money}}</div>
+          <!-- 实物奖品 -->
+          <div class="ticketBox" v-if="info.youhui_type == 0">
+            <div class="ticketTitle">商品券</div>
+            <div class="ticketContentBox">
+              <div class="ticketImageBox">
+                <div class="physical">
+                  <img class="physicalImg" :src=""http://oss.tdianyi.com/"+info.coupon_image" />
+                  <div class="physicalMask">
+                    <div class="maskName">{{info.coupon_name}}</div>
+                    <div class="maskPrice">价值{{info.return_money}}元</div>
                   </div>
-                  <div class="totalBox">满{{info.total_fee}}可用</div>
                 </div>
               </div>
+              <div class="ticketStoreMsgBox">
+                <div class="storeName">领取地址：{{info.store_name}}</div>
+                <div class="storeAddress">店铺地址：{{info.store_address}}</div>
+              </div>
             </div>
-            <div class="ticketStoreMsgBox">
-              <div class="storeName">领取地址：{{info.store_name}}</div>
-              <div class="storeAddress">店铺地址：{{info.store_address}}</div>
-            </div>
+            <div class="ticketMsg">可到店使用，免费兑换商品一份！</div>
           </div>
-          <div class="ticketMsg">到店使用，扫码支付可进行抵扣！</div>
+
+          <!-- 代金券 -->
+          <div class="ticketBox" v-else-if="info.youhui_type == 1">
+            <div class="ticketTitle">{{info.coupon_name}}</div>
+            <div class="ticketContentBox">
+              <div class="ticketImageBox">
+                <div class="ticketImg">
+                  <div class="realContent">
+                    <div class="priceBox">
+                      <div class="priceIcon">￥</div>
+                      <div class="priceNum">{{info.return_money}}</div>
+                    </div>
+                    <div class="totalBox">满{{info.total_fee}}可用</div>
+                  </div>
+                </div>
+              </div>
+              <div class="ticketStoreMsgBox">
+                <div class="storeName">领取地址：{{info.store_name}}</div>
+                <div class="storeAddress">店铺地址：{{info.store_address}}</div>
+              </div>
+            </div>
+            <div class="ticketMsg">到店使用，扫码支付可进行抵扣！</div>
+          </div>
         </div>
-        </div>
-       
 
         <div v-else>
-            <!-- 没中奖 -->
-        <div class="ticketBox" v-if="is_thank == 1">
-          <div class="noTicketBox">
-            <div class="notWinning"></div>
-            <div class="pity">好可惜</div>
-            <div class="pityMsg">与奖品擦肩而过了</div>
+          <!-- 没中奖 -->
+          <div class="ticketBox" v-if="is_thank == 1">
+            <div class="noTicketBox">
+              <div class="notWinning"></div>
+              <div class="pity">好可惜</div>
+              <div class="pityMsg">与奖品擦肩而过了</div>
+            </div>
+          </div>
+
+          <div class="ticketBox" v-if="is_thank == 3">
+            <div class="ticket_text">奖品搜索中...</div>
+          </div>
+
+          <!-- 没机会了 -->
+          <div class="ticketBox" v-else-if="is_thank == 2">
+            <div class="noTicketBox">
+              <div class="finish"></div>
+              <div class="pityMsg">今天集卡次数已达上限</div>
+              <div class="pityMsg">明天要再接再厉哦！</div>
+            </div>
           </div>
         </div>
 
-        <div class="ticketBox" v-if="is_thank == 3">
-          <div class="ticket_text">
-            奖品搜索中...
-          </div>
-        </div>
-
-        <!-- 没机会了 -->
-        <div class="ticketBox" v-else-if="is_thank == 2">
-          <div class="noTicketBox">
-            <div class="finish"></div>
-            <div class="pityMsg">今天集卡次数已达上限</div>
-            <div class="pityMsg">明天要再接再厉哦！</div>
-          </div>
-        </div>
-        </div>
-      
         <div class="collectBtnBox">
           <!-- 关闭遮罩，没做啥其他操作，就文案不同 -->
           <div class="collectBtn" v-if="!is_thank" @click="this._props.closeContent">立即收下</div>
@@ -153,7 +147,7 @@ export default {
   },
   data() {
     return {
-      surface: true,
+      surface: true
     };
   },
   created() {
@@ -170,7 +164,7 @@ export default {
     },
     // 翻卡
     eve_cardres_click() {
-       if (this.surface) {
+      if (this.surface) {
         this.fn_reserve_action(this.surface);
         this.surface = !this.surface;
       } else {
@@ -287,12 +281,12 @@ export default {
         align-items: center;
 
         .ticket_text {
-          width 100%
-          height 100%
-          display flex
-          align-items center
-          justify-content center
-          color #fff
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
         }
 
         .ticketTitle {

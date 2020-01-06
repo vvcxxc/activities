@@ -4,9 +4,28 @@
       <van-loading type="spinner" color="#1989fa" class="collectCardLoadingIcon" />
     </div>
     <div class="rulesShowButton"></div>
+
+    <div class="noChanceBox" v-if="noChanceShow">
+      <div class="noChanceContent">
+        <div class="noChanceCard">
+          <div class="openCard">
+            <div class="ticketBox">
+              <div class="noTicketBox">
+                <div class="finish"></div>
+                <div class="pityMsg">今天集卡次数已达上限</div>
+                <div class="pityMsg">明天要再接再厉哦！</div>
+              </div>
+            </div>
+            <div class="collectBtnBox" @click="closeNoChance">
+              <div class="collectBtn">关闭</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="cardMask" v-if="cardShow">
       <div class="cardContent">
-        <!-- 查到的后端数据testData传给子组件 -->
         <rotate3DCard
           trigger="click"
           direction="row"
@@ -183,7 +202,7 @@ export default {
     return {
       showLoading: false,
       cardShow: false,
-      // cardShow: false,
+      noChanceShow: false,
       message: {},
       card_list: [{ num: 0 }, { num: 0 }, { num: 0 }, { num: 0 }],
       collectNum: 0,
@@ -220,8 +239,8 @@ export default {
               } else {
                 this.is_thank = 1;
               }
-            }else{
-              this.is_thank = 1
+            } else {
+              this.is_thank = 1;
             }
           })
           .catch(err => {
@@ -241,6 +260,9 @@ export default {
   methods: {
     closeContent() {
       this.cardShow = false;
+    },
+    closeNoChance() {
+      this.noChanceShow = false;
     },
     // 领取奖品
     getPrize() {
@@ -308,10 +330,14 @@ export default {
         getNewCard().then(res => {
           this.times++;
           if (res.data) {
-            this.getList();
-            this.new_card = res.data;
-            clearTimeout(this.timer);
-            this.cardShow = true;
+            if (res.data.card_type_id) {
+              this.getList();
+              this.new_card = res.data;
+              clearTimeout(this.timer);
+              this.cardShow = true;
+            } else {
+              this.noChanceShow = true;
+            }
           } else {
             if (this.times < 5) {
               this.isHaveCard();
@@ -357,6 +383,106 @@ export default {
   flex-direction: column;
   align-items: center;
   position: relative;
+
+  .noChanceBox {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 3;
+    left: 0;
+    top: 0;
+    background: rgba(0, 0, 0, 0.7);
+
+    .noChanceContent {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+
+      .noChanceCard {
+        width: 2.575rem;
+        height: 3.68rem;
+        transition: all 0.2s;
+        position: relative;
+        perspective: 1500px; // 视距
+        background-color: transparent;
+        point: cursor;
+
+        .openCard {
+          width: 100%;
+          height: 100%;
+          background: url('http://oss.tdianyi.com/front/kQTGSNRiepYzFQB6AiZcx7dRatWF6QYc.png');
+          background-size: 100% 100%;
+          background-repeat: no-repeat;
+
+          .ticketBox {
+            height: 2.8rem;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .noTicketBox {
+              width: 100%;
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+
+              .finish {
+                width: 0.9rem;
+                height: 0.835rem;
+                background: url('http://oss.tdianyi.com/front/fYkbp4rXZzBppQKdXKpApt4Hj4iYZcx5.png');
+                background-size: 100% 100%;
+                background-repeat: no-repeat;
+                margin-bottom: 0.25rem;
+              }
+
+              .pity {
+                width: 100%;
+                color: #fff;
+                line-height: 1;
+                text-align: center;
+                font-size: 0.2rem;
+                height: 0.275rem;
+              }
+
+              .pityMsg {
+                width: 100%;
+                color: #fff;
+                line-height: 1;
+                text-align: center;
+                font-size: 0.14rem;
+                height: 0.18rem;
+              }
+            }
+          }
+
+          .collectBtnBox {
+            width: 100%;
+            height: 0.335rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .collectBtn {
+              width: 1.5rem;
+              height: 0.335rem;
+              line-height: 0.335rem;
+              text-align: center;
+              font-size: 0.15rem;
+              font-family: PingFang SC;
+              font-weight: bold;
+              color: rgba(255, 235, 215, 1);
+              background: rgba(245, 71, 4, 1);
+              border-radius: 0.1675rem;
+            }
+          }
+        }
+      }
+    }
+  }
 
   .collectCardLoading {
     width: 0.2rem;
