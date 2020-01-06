@@ -4,7 +4,6 @@
       <van-loading type="spinner" color="#1989fa" class="collectCardLoadingIcon" />
     </div>
     <div class="rulesShowButton"></div>
-
     <div class="noChanceBox" v-if="noChanceShow">
       <div class="noChanceContent">
         <div class="noChanceCard">
@@ -23,7 +22,6 @@
         </div>
       </div>
     </div>
-
     <div class="cardMask" v-if="cardShow">
       <div class="cardContent">
         <rotate3DCard
