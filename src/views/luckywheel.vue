@@ -28,7 +28,7 @@
         </div>
         <div class="timesBox">
           剩余次数：{{this.lottery_ticket}}次
-          <div class="button" @click="openChangeNum">兑换按钮</div>
+          <div class="button" @click="openChangeNum">兑换次数</div>
         </div>
       </div>
     </div>
@@ -402,16 +402,14 @@ export default {
 }
 
 .wheel-main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
   width: 2.95rem;
   height: 2.95rem;
   font-size: 16px;
   overflow: hidden;
   position: absolute;
   top: 0.3rem;
+  left: 50%;
+  margin-left: -1.475rem;
 }
 .wheel-bg {
   width: 100%;
