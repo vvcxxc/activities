@@ -100,14 +100,14 @@
           </div>
 
           <!-- 没机会了 -->
-          <div class="ticketBox" v-else-if="is_thank == 2">
+          <!-- <div class="ticketBox" v-else-if="is_thank == 2">
             <div class="noTicketBox">
               <div class="finish"></div>
               <div class="pityMsg">今天集卡次数已达上限</div>
               <div class="pityMsg">明天要再接再厉哦！</div>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <div class="collectBtnBox">
           <!-- 关闭遮罩，没做啥其他操作，就文案不同 -->

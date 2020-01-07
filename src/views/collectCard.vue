@@ -232,11 +232,7 @@ export default {
               this.info = res.data;
             } else if (res.status_code == 400) {
               // 谢谢惠顾
-              if (res.message.includes("机会")) {
-                this.is_thank = 2;
-              } else {
-                this.is_thank = 1;
-              }
+              this.is_thank = 1;
             } else {
               this.is_thank = 1;
             }
