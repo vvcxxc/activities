@@ -134,10 +134,13 @@ export const getCityLoveResult = () =>
 /**
 * 获取轮盘抽奖列表
 */
-export const getActivityRafflePrize = () =>
+export const getActivityRafflePrize = (area_id) =>
   http({
     url: 'v3/Lotterys/activity_raffle_prize',
     method: 'get',
+    params:{
+      area_id
+    }
   });
 
 /**
