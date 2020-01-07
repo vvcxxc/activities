@@ -324,13 +324,16 @@ export default {
         getNewCard().then(res => {
           this.times++;
           if (res.data) {
+            console.log(res.data.card_type_id, res);
             if (res.data.card_type_id && res.data.card_type_id != 0) {
+              console.log("111111111");
               this.getList();
               this.new_card = res.data;
               clearTimeout(this.timer);
               this.cardShow = true;
               this.noChanceShow = false;
             } else {
+              console.log("222222222");
               this.cardShow = false;
               this.noChanceShow = true;
               clearTimeout(this.timer);
