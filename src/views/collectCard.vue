@@ -264,7 +264,7 @@ export default {
     },
     // 去抽大奖
     gotoLuckyWheel() {
-      this.$router.push({ name: "luckywheel" });
+      this.$router.push({ name: "luckywheel",query: {area_id: this.$route.query.area_id} });
     },
     // 获取底部列表
     getBottomCardList() {
@@ -351,6 +351,7 @@ export default {
     isNewCard() {
       getNewCard().then(res => {
         this.times++;
+        console.log(res)
         if (res.data) {
           if (res.data.card_type_id && res.data.card_type_id != 0) {
             this.getList();

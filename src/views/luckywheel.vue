@@ -225,7 +225,7 @@ export default {
 
     async getData() {
       //查询奖品列表
-      let res = await getActivityRafflePrize();
+      let res = await getActivityRafflePrize(this.$route.query.area_id);
       if (res.code == 200) {
         this.prize_list = res.data;
       }
