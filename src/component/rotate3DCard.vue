@@ -46,7 +46,7 @@
             <div class="ticketContentBox">
               <div class="ticketImageBox">
                 <div class="physical">
-                  <img class="physicalImg" :src=""http://oss.tdianyi.com/"+info.coupon_image" />
+                  <img class="physicalImg" :src="'http://oss.tdianyi.com/'+info.coupon_image" />
                   <div class="physicalMask">
                     <div class="maskName">{{info.coupon_name}}</div>
                     <div class="maskPrice">价值{{info.return_money}}元</div>
