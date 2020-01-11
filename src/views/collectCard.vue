@@ -130,7 +130,8 @@
       <div class="changeJackpotBox">
         <div class="changeJackpotBtn" @click="getBottomCardList">换一批</div>
       </div>
-      <div class="changeJackpotContent">
+
+      <div class="changeJackpotContent" v-if="bottomYouhuiList.length==3">
         <div class="changeJackpotItemBox">
           <div class="ticketContentBox">
             <div class="ticketCrown"></div>
@@ -149,7 +150,6 @@
             </div>
           </div>
         </div>
-
         <div class="changeJackpotItemBox" v-for="(item,idx) in bottomYouhuiList" :key="idx">
           <div class="ticketContentBox">
             <div class="ticketImageBox" v-if="item.youhui_type==0">
@@ -179,6 +179,86 @@
               <div class="storeAddress">店铺地址：{{item.address}}</div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div
+        class="changeJackpotContent"
+        v-else-if="bottomYouhuiList.length<3&&bottomYouhuiList.length>0"
+      >
+        <div class="changeJackpotItemBox">
+          <div class="ticketContentBox">
+            <div class="ticketCrown"></div>
+            <div class="ticketImageBox">
+              <div class="physical">
+                <img class="physicalImg" :src="bottomPrizeList.image" />
+                <div class="physicalMask">
+                  <div class="maskName">{{bottomPrizeList.name}}</div>
+                  <div class="maskPrice">价值{{bottomPrizeList.market_price}}元</div>
+                </div>
+              </div>
+            </div>
+            <div class="ticketStoreMsgBox">
+              <div class="storeName">领取地址：{{bottomPrizeList.shop_name}}</div>
+              <div class="storeAddress">店铺地址：{{bottomPrizeList.address}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="changeJackpotItemBox" v-for="(item,idx) in bottomYouhuiList" :key="idx">
+          <div class="ticketContentBox">
+            <div class="ticketImageBox" v-if="item.youhui_type==0">
+              <div class="physical">
+                <img class="physicalImg" :src="item.icon" />
+                <div class="physicalMask">
+                  <div class="maskName">{{item.youhui_name}}</div>
+                  <div class="maskPrice">价值{{item.return_money}}元</div>
+                </div>
+              </div>
+            </div>
+            <div class="ticketImageBox" v-if="item.youhui_type==1">
+              <div class="ticketBackground">
+                <div class="ticketImg">
+                  <div class="realContent">
+                    <div class="priceBox">
+                      <div class="priceIcon">￥</div>
+                      <div class="priceNum">{{item.return_money}}</div>
+                    </div>
+                    <div class="totalBox">满{{item.total_fee}}可用</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="ticketStoreMsgBox">
+              <div class="storeName">领取地址：{{item.shop_name}}</div>
+              <div class="storeAddress">店铺地址：{{item.address}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="changeJackpotItemBox" v-for="(item,idx) in nullList" :key="idx">
+          <div class="ticketContentBox">{{item}}莫得礼品</div>
+        </div>
+      </div>
+      <div class="changeJackpotContent" v-else>
+        <div class="changeJackpotItemBox">
+          <div class="ticketContentBox">
+            <div class="ticketCrown"></div>
+            <div class="ticketImageBox">
+              <div class="physical">
+                <img class="physicalImg" :src="bottomPrizeList.image" />
+                <div class="physicalMask">
+                  <div class="maskName">{{bottomPrizeList.name}}</div>
+                  <div class="maskPrice">价值{{bottomPrizeList.market_price}}元</div>
+                </div>
+              </div>
+            </div>
+            <div class="ticketStoreMsgBox">
+              <div class="storeName">领取地址：{{bottomPrizeList.shop_name}}</div>
+              <div class="storeAddress">店铺地址：{{bottomPrizeList.address}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="changeJackpotItemBox" v-for="(item,idx) in nullList" :key="idx">
+          <div class="ticketContentBox">{{item}}莫得礼品</div>
         </div>
       </div>
     </div>
@@ -212,7 +292,8 @@ export default {
       card_num: 0,
       //底部列表，1奖品3券
       bottomPrizeList: {},
-      bottomYouhuiList: [{}, {}, {}]
+      bottomYouhuiList: [{}, {}, {}],
+      nullList: []
     };
   },
   components: {
@@ -264,7 +345,10 @@ export default {
     },
     // 去抽大奖
     gotoLuckyWheel() {
-      this.$router.push({ name: "luckywheel",query: {area_id: this.$route.query.area_id} });
+      this.$router.push({
+        name: "luckywheel",
+        query: { area_id: this.$route.query.area_id }
+      });
     },
     // 获取底部列表
     getBottomCardList() {
@@ -273,9 +357,16 @@ export default {
         getCardPriceList(this.$route.query.area_id)
           .then(res => {
             this.showLoading = false;
-            if (res.code == 200 && res.data.prize && res.data.youhui) {
+            if (res.code == 200) {
               this.bottomPrizeList = res.data.prize;
               this.bottomYouhuiList = res.data.youhui;
+              if (res.data.youhui.length < 3) {
+                let temp = [];
+                for (let i = 0; i < 3; i++) {
+                  temp[i] = i;
+                }
+                this.nullList = temp;
+              }
             } else {
               console.log("err", res.data);
             }
@@ -351,7 +442,7 @@ export default {
     isNewCard() {
       getNewCard().then(res => {
         this.times++;
-        console.log(res)
+        console.log(res);
         if (res.data) {
           if (res.data.card_type_id && res.data.card_type_id != 0) {
             this.getList();

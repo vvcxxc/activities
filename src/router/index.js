@@ -46,7 +46,7 @@ var router = new VueRouter({
 // 路由守卫
 router.beforeEach((to, from, next) => {
   if (process.env.VUE_APP_FLAG == 'development') {
-    Cookie.set('test_token_auth', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vdGVzdC5hcGkudGRpYW55aS5jb20vd2VjaGF0L3d4b2F1dGgiLCJpYXQiOjE1NzgzNjM4ODcsImV4cCI6MTU3ODcyMzg4NywibmJmIjoxNTc4MzYzODg3LCJqdGkiOiJCdmRNdU5tTHJET1J6NE85Iiwic3ViIjo3NTcwLCJwcnYiOiJmNmI3MTU0OWRiOGMyYzQyYjc1ODI3YWE0NGYwMmI3ZWU1MjlkMjRkIn0.BIdEgyolLhjLmbHAdSbfJqJJc50YVG_Sp_L6kZBBq_Y')
+    Cookie.set('test_token_auth', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vdGVzdC5hcGkudGRpYW55aS5jb20vd2VjaGF0L3d4b2F1dGgiLCJpYXQiOjE1Nzg3MzA1NDcsImV4cCI6MTU3OTA5MDU0NywibmJmIjoxNTc4NzMwNTQ3LCJqdGkiOiJueU5rMGxGTGFyOGY1VHFTIiwic3ViIjo2ODQwLCJwcnYiOiJmNmI3MTU0OWRiOGMyYzQyYjc1ODI3YWE0NGYwMmI3ZWU1MjlkMjRkIn0.0j47WtyUD4_qXBgBSm4k4EvBdqtMBJs4nNB0OrKv0aE')
   }
   if (to.name == 'pay') {
     if (
