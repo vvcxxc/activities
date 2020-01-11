@@ -132,7 +132,7 @@
       </div>
 
       <div class="changeJackpotContent" v-if="bottomYouhuiList.length==3">
-        <div class="changeJackpotItemBox">
+        <div class="changeJackpotItemBox" v-if="bottomPrizeList.name">
           <div class="ticketContentBox">
             <div class="ticketCrown"></div>
             <div class="ticketImageBox">
@@ -149,6 +149,9 @@
               <div class="storeAddress">店铺地址：{{bottomPrizeList.address}}</div>
             </div>
           </div>
+        </div>
+        <div class="changeJackpotItemBox" v-else>
+          <div class="ticketContentBox">没奖品</div>
         </div>
         <div class="changeJackpotItemBox" v-for="(item,idx) in bottomYouhuiList" :key="idx">
           <div class="ticketContentBox">
@@ -186,7 +189,7 @@
         class="changeJackpotContent"
         v-else-if="bottomYouhuiList.length<3&&bottomYouhuiList.length>0"
       >
-        <div class="changeJackpotItemBox">
+        <div class="changeJackpotItemBox" v-if="bottomPrizeList.name">
           <div class="ticketContentBox">
             <div class="ticketCrown"></div>
             <div class="ticketImageBox">
@@ -204,6 +207,10 @@
             </div>
           </div>
         </div>
+        <div class="changeJackpotItemBox" v-else>
+          <div class="ticketContentBox">没奖品</div>
+        </div>
+
         <div class="changeJackpotItemBox" v-for="(item,idx) in bottomYouhuiList" :key="idx">
           <div class="ticketContentBox">
             <div class="ticketImageBox" v-if="item.youhui_type==0">
@@ -215,6 +222,7 @@
                 </div>
               </div>
             </div>
+
             <div class="ticketImageBox" v-if="item.youhui_type==1">
               <div class="ticketBackground">
                 <div class="ticketImg">
@@ -239,7 +247,7 @@
         </div>
       </div>
       <div class="changeJackpotContent" v-else>
-        <div class="changeJackpotItemBox">
+        <div class="changeJackpotItemBox" v-if="bottomPrizeList.name">
           <div class="ticketContentBox">
             <div class="ticketCrown"></div>
             <div class="ticketImageBox">
@@ -256,6 +264,9 @@
               <div class="storeAddress">店铺地址：{{bottomPrizeList.address}}</div>
             </div>
           </div>
+        </div>
+        <div class="changeJackpotItemBox" v-else>
+          <div class="ticketContentBox">没奖品</div>
         </div>
         <div class="changeJackpotItemBox" v-for="(item,idx) in nullList" :key="idx">
           <div class="ticketContentBox">{{item}}莫得礼品</div>
