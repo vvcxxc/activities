@@ -154,7 +154,7 @@
           <div class="ticketContentBox_null">
             <img
               class="ticketContentBox_nullImg"
-              src="http://oss.tdianyi.com/front/dXmkNeesya45MJGJ2zCZDiSCnMN4b6yc.png"
+              src="http://oss.tdianyi.com/front/AmBHht8GR7Wf2ABSzCceWMYecjiEQw6E.png"
             />
             <div class="ticketContentBox_null_info">暂无奖品</div>
           </div>
@@ -217,7 +217,7 @@
           <div class="ticketContentBox_null">
             <img
               class="ticketContentBox_nullImg"
-              src="http://oss.tdianyi.com/front/dXmkNeesya45MJGJ2zCZDiSCnMN4b6yc.png"
+              src="http://oss.tdianyi.com/front/AmBHht8GR7Wf2ABSzCceWMYecjiEQw6E.png"
             />
             <div class="ticketContentBox_null_info">暂无奖品</div>
           </div>
@@ -258,7 +258,7 @@
           <div class="ticketContentBox_null">
             <img
               class="ticketContentBox_nullImg"
-              src="http://oss.tdianyi.com/front/dXmkNeesya45MJGJ2zCZDiSCnMN4b6yc.png"
+              src="http://oss.tdianyi.com/front/AmBHht8GR7Wf2ABSzCceWMYecjiEQw6E.png"
             />
             <div class="ticketContentBox_null_info">暂无卡券</div>
           </div>
@@ -287,7 +287,7 @@
           <div class="ticketContentBox_null">
             <img
               class="ticketContentBox_nullImg"
-              src="http://oss.tdianyi.com/front/dXmkNeesya45MJGJ2zCZDiSCnMN4b6yc.png"
+              src="http://oss.tdianyi.com/front/AmBHht8GR7Wf2ABSzCceWMYecjiEQw6E.png"
             />
             <div class="ticketContentBox_null_info">暂无奖品</div>
           </div>
@@ -296,7 +296,7 @@
           <div class="ticketContentBox_null">
             <img
               class="ticketContentBox_nullImg"
-              src="http://oss.tdianyi.com/front/dXmkNeesya45MJGJ2zCZDiSCnMN4b6yc.png"
+              src="http://oss.tdianyi.com/front/AmBHht8GR7Wf2ABSzCceWMYecjiEQw6E.png"
             />
             <div class="ticketContentBox_null_info">暂无卡券</div>
           </div>
@@ -1072,6 +1072,7 @@ export default {
           justify-content: space-between;
           align-items: center;
           position: relative;
+          overflow: hidden;
 
           .ticketContentBox_nullImg {
             width: 100%;
