@@ -151,7 +151,13 @@
           </div>
         </div>
         <div class="changeJackpotItemBox" v-else>
-          <div class="ticketContentBox">没奖品</div>
+          <div class="ticketContentBox_null">
+            <img
+              class="ticketContentBox_nullImg"
+              src="http://oss.tdianyi.com/front/dXmkNeesya45MJGJ2zCZDiSCnMN4b6yc.png"
+            />
+            <div class="ticketContentBox_null_info">暂无奖品</div>
+          </div>
         </div>
         <div class="changeJackpotItemBox" v-for="(item,idx) in bottomYouhuiList" :key="idx">
           <div class="ticketContentBox">
@@ -208,7 +214,13 @@
           </div>
         </div>
         <div class="changeJackpotItemBox" v-else>
-          <div class="ticketContentBox">没奖品</div>
+          <div class="ticketContentBox_null">
+            <img
+              class="ticketContentBox_nullImg"
+              src="http://oss.tdianyi.com/front/dXmkNeesya45MJGJ2zCZDiSCnMN4b6yc.png"
+            />
+            <div class="ticketContentBox_null_info">暂无奖品</div>
+          </div>
         </div>
 
         <div class="changeJackpotItemBox" v-for="(item,idx) in bottomYouhuiList" :key="idx">
@@ -243,7 +255,13 @@
           </div>
         </div>
         <div class="changeJackpotItemBox" v-for="(item,idx) in nullList" :key="idx">
-          <div class="ticketContentBox">{{item}}莫得礼品</div>
+          <div class="ticketContentBox_null">
+            <img
+              class="ticketContentBox_nullImg"
+              src="http://oss.tdianyi.com/front/dXmkNeesya45MJGJ2zCZDiSCnMN4b6yc.png"
+            />
+            <div class="ticketContentBox_null_info">暂无卡券</div>
+          </div>
         </div>
       </div>
       <div class="changeJackpotContent" v-else>
@@ -266,10 +284,22 @@
           </div>
         </div>
         <div class="changeJackpotItemBox" v-else>
-          <div class="ticketContentBox">没奖品</div>
+          <div class="ticketContentBox_null">
+            <img
+              class="ticketContentBox_nullImg"
+              src="http://oss.tdianyi.com/front/dXmkNeesya45MJGJ2zCZDiSCnMN4b6yc.png"
+            />
+            <div class="ticketContentBox_null_info">暂无奖品</div>
+          </div>
         </div>
         <div class="changeJackpotItemBox" v-for="(item,idx) in nullList" :key="idx">
-          <div class="ticketContentBox">{{item}}莫得礼品</div>
+          <div class="ticketContentBox_null">
+            <img
+              class="ticketContentBox_nullImg"
+              src="http://oss.tdianyi.com/front/dXmkNeesya45MJGJ2zCZDiSCnMN4b6yc.png"
+            />
+            <div class="ticketContentBox_null_info">暂无卡券</div>
+          </div>
         </div>
       </div>
     </div>
@@ -1029,6 +1059,34 @@ export default {
               font-family: PingFang;
               color: rgba(153, 153, 153, 1);
             }
+          }
+        }
+
+        .ticketContentBox_null {
+          width: 1.6rem;
+          height: 1.385rem;
+          background: rgba(255, 255, 255, 1);
+          border-radius: 0.05rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          align-items: center;
+          position: relative;
+
+          .ticketContentBox_nullImg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+          }
+
+          .ticketContentBox_null_info {
+            position: absolute;
+            left: 0.08rem;
+            bottom: 0.08rem;
+            font-size: 0.11rem;
+            font-family: PingFang SC;
+            font-weight: bold;
+            color: rgba(198, 198, 198, 1);
           }
         }
       }
