@@ -1,4 +1,5 @@
-# newpay
+# 活动项目
+包含各种抽奖活动集卡活动
 
 ## Project setup
 ```

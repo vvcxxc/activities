@@ -17,6 +17,7 @@ export default {
 body,
 html {
   height: 100%;
+   -webkit-text-size-adjust: 100% !important;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;

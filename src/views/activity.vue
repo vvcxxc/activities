@@ -1,42 +1,5 @@
 <template>
   <div class="activity">
-    <!-- <div class="header">
-      <img :src="success_icon" /> 支付完成！
-    </div>
-    <div class="order-num" ref="order" @click="showOrder" v-if="!isshow">
-      <div>
-        <p class="ordernum">订单号：{{message.order_sn}}</p>
-      </div>
-      <i class="iconfont bottom-arro">
-        <span class="xiangqing">订单详情</span>&#xe62c;
-      </i>
-    </div>
-    <div class="order-num1" ref="order" @click="showOrder" v-if="isshow">
-      <div>
-        <p class="ordernum">订单号：{{message.order_sn}}</p>
-      </div>
-      <p>店铺：{{message.store_name}}</p>
-      <p>支付方式：{{message.browsertype}}</p>
-      <p>金额：{{message.amount}}</p>
-      <p v-if="is_result_money">实付：{{message.result_money}}</p>
-      <i class="iconfont bottom-arro">&#xe61f;</i>
-    </div>
-
-    <div class="order-num-zhanwei"></div> -->
-
-    <!-- 文字轮播 -->
-    <div class="scroll-top">
-      <div class="scroll-list" id="scroll">
-        <div
-          id="marquee"
-        >恭喜1284获得<span style="color:yellow">￥50元无门槛红包</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;恭喜9098获得<span style="color:yellow">￥30元无门槛红红包</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;恭喜4727获得<span style="color:yellow">￥30元无门槛红包</span></div>
-        <div
-          id="copy"
-        >恭喜1284获得<span style="color:yellow">￥50元无门槛红包</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;恭喜9098获得<span style="color:yellow">￥30元无门槛红红包</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;恭喜4727获得<span style="color:yellow">￥30元无门槛红包</span></div>
-      </div>
-      <div id="node"></div>
-    </div>
-
     <!-- 主题内容 -->
     <main>
       <div class="prizeWheels" v-if="is_ok">
@@ -151,7 +114,8 @@ import {
   requestGetResult,
   requestGetCoupon,
   requestOrderCoupons
-} from "../api/api_pay";
+} from "../api/api";
+import {getUrlParams} from '../utils/get_info'
 import { Loading, Dialog } from "vant";
 export default {
   data() {
@@ -224,33 +188,19 @@ export default {
     }
   },
   created() {
-    if (sessionStorage.getItem("message")) {
-      this.message = JSON.parse(sessionStorage.getItem("message"));
-    } else {
-      let message = this.$route.params;
-      if (message.browsertype == "wechat") {
-        message.browsertype = "微信支付";
-      } else if (message.browsertype == "alipay") {
-        message.browsertype = "支付宝支付";
-      } else {
-        message.browsertype = "";
-      }
-      if (!message.result_money) {
-        this.is_result_money = false;
-      }
-      this.message = message;
-      sessionStorage.setItem("message", JSON.stringify(message));
+    let { order_sn } = getUrlParams()
+    let orderSn = sessionStorage.getItem('order_sn')
+    if(orderSn && orderSn == order_sn){
+      this.is_ok = false
+    }else{
+      this.is_ok = true
     }
-    if (sessionStorage.getItem("is_ok")) {
-      this.is_ok = false;
-    } else {
-      this.is_ok = true;
-    }
+    this.order_sn = order_sn
   },
   mounted() {
     _hmt.push(["_trackEvent", "活动页", "跳转到活动页"]);
+    console.log(this.order_sn)
     this.getList();
-    this.move();
 
     this.loading = setTimeout(() => {
       this.is_loading = false;
@@ -258,13 +208,11 @@ export default {
   },
 
   methods: {
+    
     //获取支付返券
     async getOrderCoupon() {
-      let is_ok = sessionStorage.getItem("is_ok");
-      if (is_ok) {
-        return;
-      }
-      let order_sn = this.message.order_sn;
+      // 订单判断
+      let order_sn = this.order_sn;
       let params = {
         order_sn
       };
@@ -328,15 +276,16 @@ export default {
     },
     play() {
       //点击开始游戏
-      let is_ok = sessionStorage.getItem("is_ok");
-      if (is_ok) {
+      // 订单判定
+      let order_sn = sessionStorage.getItem("order_sn");
+      if (order_sn && this.order_sn == order_sn) {
         Dialog.alert({
           message: "您已抽奖",
           confirmButtonColor: "#fc4833"
         });
         return;
       } else {
-        sessionStorage.setItem("is_ok", 1);
+        sessionStorage.setItem("order_sn", this.order_sn);
       }
       _hmt.push(["_trackEvent", "抽奖", "点击抽奖"]);
       if (this.isMoving) {
@@ -438,34 +387,20 @@ export default {
       let params = {
         xpoint: "113.450163",
         ypoint: "23.107527",
-        order_sn: this.message.order_sn
+        order_sn: this.order_sn
         // order_sn: (new Date()).getTime()
       };
-      let list = await requestLotterys(params);
-      list = list.data.lottery_info;
+      let res = await requestLotterys(params);
+      if(res.code == 313000){
+        this.is_ok = false
+        return
+      }
+      let list = res.data.lottery_info;
       for (let i = 0; i < list.length; i++) {
         list[i].active = false;
       }
       this.list = list;
     },
-
-    // 滚动播报
-    move() {
-      // 获取文字text 的计算后宽度  （由于overflow的存在，直接获取不到，需要独立的node计算）
-      let width = document.getElementById("node").getBoundingClientRect().width;
-      let scroll = document.getElementById("scroll");
-      // let copy = document.getElementById('copy')
-      let distance = 0; // 位移距离
-      this.timer5 = setInterval(function() {
-        distance = distance - 1;
-        // 如果位移超过文字宽度，则回到起点
-        if (-distance >= width) {
-          distance = 16;
-        }
-        scroll.style.transform = "translateX(" + distance + "px)";
-      }, 20);
-    },
-
     // 立即领取
     async getCoupon() {
       _hmt.push(["_trackEvent", "领取", "领取奖品"]);

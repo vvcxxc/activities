@@ -2,7 +2,11 @@ import { getBrowserType, getUrlParams } from './get_info'
 import { Cookie } from './common';
 
 export const Login = () => {
-    let from = process.env.VUE_APP_FROM;
+  if(process.env.VUE_APP_FLAG == 'development'){
+    Cookie.set('test_token_auth','eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vdGVzdC5hcGkudGRpYW55aS5jb20vd2VjaGF0L3d4b2F1dGgiLCJpYXQiOjE1NzQ5OTI5MzQsImV4cCI6MTU3NTM1MjkzNCwibmJmIjoxNTc0OTkyOTM0LCJqdGkiOiJibnQ0SEJXUjJoMjBjUmREIiwic3ViIjozMzY3LCJwcnYiOiJmNmI3MTU0OWRiOGMyYzQyYjc1ODI3YWE0NGYwMmI3ZWU1MjlkMjRkIn0.UAgFW-kXmQdfWi4mvxmjFDGbV_e64dfNSPwxLps_onc')
+    return
+  }
+    let from = window.location.href;
       let browsertype = getBrowserType();
       if (browsertype == "wechat") {
         let codeid = getUrlParams().code_id;

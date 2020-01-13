@@ -41,9 +41,6 @@ instance.interceptors.response.use(
     store.dispatch("ajaxAfter")
     const { response } = err
     // console.log(JSON.stringify(err).includes('timeout'))
-    if(JSON.stringify(err).includes('timeout')){
-      Toast('网络异常，请重新扫码支付')
-    }
     if(err)
     if (response) {
       const { status, data } = response
@@ -54,7 +51,7 @@ instance.interceptors.response.use(
         case NOT_SIGN:
           import("../utils/handle_login").then(({ Login }) => {
             window.console.log("execute Login method")
-            // return Login()
+            return Login()
           })
           break
         case NOT_FIND:
