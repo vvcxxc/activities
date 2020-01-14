@@ -33,7 +33,8 @@
           </div>
         </div>
         <div class="cardBtnBox">
-          <div class="acceptBtn" @click="eve_cardres_click">立即翻开</div>
+          <!-- <div class="acceptBtn" @click="eve_cardres_click">立即翻开</div> -->
+          <div class="acceptBtn" @click="this._props.closeContent">关闭</div>
         </div>
       </div>
     </div>
