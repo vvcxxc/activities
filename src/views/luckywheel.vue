@@ -237,7 +237,7 @@ export default {
           if (res.code == 200 && res.data && res.data.luckyDrawNumber) {
             this.lottery_ticket = Number(res.data.luckyDrawNumber);
           } else {
-            Toast(res.message);
+            // Toast(res.message);
           }
         })
         .catch(err => {
