@@ -33,6 +33,7 @@
       </div>
     </div>
     <div class="introduceBox">
+      <div class="changeButton">换一批</div>
       <div class="introduceItemBox">
         <div class="ticketCrown"></div>
         <div class="introduceTop">
@@ -518,12 +519,30 @@ export default {
   background: url("http://oss.tdianyi.com/front/YGGXNy75MwhrWda6nJFfd2emAGmPcM8e.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  padding: 0.475rem 0.075rem 0.225rem;
+  padding: 0.485rem 0.075rem 0.225rem;
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
+  position: relative;
+}
+.changeButton {
+  position: absolute;
+  right: 0.15rem;
+  top: 0.22rem;
+  width: 0.64rem;
+  height: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.125rem;
+  box-sizing: border-box;
+  text-align: center;
+  border: 0.01rem solid rgba(236, 68, 4, 1);
+  background: rgba(254, 110, 35, 1);
+  color: rgba(255, 255, 255, 1);
+  font-size: 0.13rem;
 }
 .introduceItemBox {
   height: 1.475rem;
