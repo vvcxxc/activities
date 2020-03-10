@@ -1131,7 +1131,6 @@ main {
 .login-info {
   font-size: 0.13rem;
   font-family: PingFang SC;
-  font-weight: 500;
   color: rgba(153, 153, 153, 1);
   line-height: 1;
   margin-bottom: 0.2rem;
