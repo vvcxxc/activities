@@ -101,7 +101,7 @@
       <van-loading color="#fff" class="loading" vertical>Loading...</van-loading>
     </div>
 
-    <div class="login-mask" v-if="!loginShow">
+    <div class="login-mask" v-if="loginShow">
       <div class="login-content">
         <div class="login-title">请绑定手机号码领取卡券</div>
         <div class="login-info">填写后，在支付宝也可以使用该优惠券</div>
