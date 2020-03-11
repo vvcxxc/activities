@@ -101,7 +101,7 @@
       <van-loading color="#fff" class="loading" vertical>Loading...</van-loading>
     </div>
 
-    <div class="login-mask" v-if="!loginShow">
+    <div class="login-mask" v-if="loginShow">
       <div class="login-content">
         <div class="login-title">请绑定手机号码领取卡券</div>
         <div class="login-info">填写后，在支付宝也可以使用该优惠券</div>
@@ -464,14 +464,19 @@ export default {
     },
     getPhoneCode() {
       if (/^1[3456789]\d{9}$/.test(Number(this.phone))) {
-        getCode(this.phone).then(res => {
-          if (res.status_code == 200) {
-            Toast.success(res.message);
-            this.is_code = false;
-          } else {
-            Toast.fail(res.message);
-          }
-        });
+        getCode(this.phone)
+          .then(res => {
+            if (res.status_code == 200) {
+              Toast.success(res.message);
+              this.is_code = false;
+            } else {
+              Toast.fail(res.message);
+            }
+          })
+          .catch(err => {
+            console.log(err);
+            Toast("网络似乎不太通畅，请稍候再试");
+          });
       } else {
         Toast.fail("请输入正确的手机号");
       }
@@ -483,17 +488,22 @@ export default {
           phone: this.phone,
           verify_code: this.code,
           from: type
-        }).then(res => {
-          console.log(res);
-          if (res.status_code == 200) {
-            Toast.success("登录成功");
-            this.loginShow = false;
-            window.location.href =
-              process.env.VUE_APP_SHOP + "id=" + this.lottery_data.store_id;
-          } else {
-            Toast.success("登录失败");
-          }
-        });
+        })
+          .then(res => {
+            console.log(res);
+            if (res.status_code == 200) {
+              Toast.success("登录成功");
+              this.loginShow = false;
+              window.location.href =
+                process.env.VUE_APP_SHOP + "id=" + this.lottery_data.store_id;
+            } else {
+              Toast.success(res.message || "登录失败");
+            }
+          })
+          .catch(err => {
+            console.log(err);
+            Toast("网络似乎不太通畅，请稍候再试");
+          });
       }
     },
     closeLogin() {
@@ -1133,7 +1143,6 @@ main {
 .login-info {
   font-size: 0.13rem;
   font-family: PingFang SC;
-  font-weight: 500;
   color: rgba(153, 153, 153, 1);
   line-height: 1;
   margin-bottom: 0.2rem;
