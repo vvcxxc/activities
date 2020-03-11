@@ -233,7 +233,7 @@ export default {
       this.bindPhoneRecordType = true;
     }
     let { order_sn } = getUrlParams();
-    console.log(order_sn)
+    console.log(getBrowserType())
     let orderSn = sessionStorage.getItem("order_sn");
     if (orderSn && orderSn == order_sn) {
       this.is_ok = false;
@@ -483,7 +483,7 @@ export default {
     },
     login() {
       if (this.phone && this.code) {
-        let type = getBrowserType == "wechat" ? "wx" : "ali";
+        let type = getBrowserType() == "wechat" ? "wx" : "ali";
         phoneLogin({
           phone: this.phone,
           verify_code: this.code,
