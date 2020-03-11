@@ -490,7 +490,6 @@ export default {
           from: type
         })
           .then(res => {
-            console.log(res);
             if (res.status_code == 200) {
               Toast.success("登录成功");
               this.loginShow = false;
