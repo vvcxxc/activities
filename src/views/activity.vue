@@ -43,9 +43,7 @@
           <div class="coupon-left">
             <p class="sum">
               <i>￥</i>
-             <span> 
-              {{order_coupon.return_money}}
-             </span>
+              <span>{{order_coupon.return_money}}</span>
             </p>
             <p class="manjian">满{{order_coupon.total_fee}}可用</p>
           </div>
@@ -71,14 +69,11 @@
             <p class="coupon-text2">领取后{{lottery_data.expire_day}}日内有效</p>
           </div>
         </div>
-        <div class="coupon2"  v-else-if="lottery_data.youhui_type == 1" >
-         
+        <div class="coupon2" v-else-if="lottery_data.youhui_type == 1">
           <div class="coupon2-left">
             <p class="sum">
               <i>￥</i>
-              <span>
-              {{lottery_data.return_money}}
-              </span>
+              <span>{{lottery_data.return_money}}</span>
             </p>
             <p class="manjian">满{{lottery_data.total_fee}}可用</p>
           </div>
@@ -105,9 +100,34 @@
     <div class="loading-box" v-if="is_loading">
       <van-loading color="#fff" class="loading" vertical>Loading...</van-loading>
     </div>
+
+    <div class="login-mask" v-if="loginShow">
+      <div class="login-content">
+        <div class="login-title">请绑定手机号码领取卡券</div>
+        <div class="login-info">填写后，在支付宝也可以使用该优惠券</div>
+        <div class="login-phone-box">
+          <div class="login-phone-title">手机号</div>
+          <input class="login-phone-input" placeholder="请输入手机号" maxlength="11" v-model="phone" />
+        </div>
+        <div class="login-code-box">
+          <div class="login-code-title">验证码</div>
+          <input class="login-code-input" placeholder="请输入验证码" v-model="code" />
+          <div class="login-code-btn" @click="getPhoneCode">获取</div>
+        </div>
+        <div class="login-sumbit-btn" @click="login">提交</div>
+      </div>
+
+      <img
+        @click="closeLogin"
+        class="login-close-btn"
+        src="http://oss.tdianyi.com/front/RphN3ayZhXXbj37mne6pX8AGXfCrA3WS.png"
+      />
+    </div>
   </div>
 </template>
 <script>
+import { phoneLogin, getCode } from "../api/api_user";
+import { getBrowserType } from "../utils/get_info";
 import "../assets/iconfont/iconfont.css";
 import {
   requestLotterys,
@@ -115,12 +135,25 @@ import {
   requestGetCoupon,
   requestOrderCoupons
 } from "../api/api";
-import {getUrlParams} from '../utils/get_info'
-import { Loading, Dialog } from "vant";
+import { getUrlParams } from "../utils/get_info";
+import { Cookie } from "../utils/common";
+import { Loading, Dialog,Toast } from "vant";
 export default {
   data() {
     return {
       message: {},
+      //登录手机
+      phone: "",
+      //登录验证码
+      code: "",
+      //无绑手机
+      bindPhoneRecordType: false,
+      //无支付返券
+      returnTicketRecordType: false,
+      //无中奖
+      prizeRecordType: false,
+      //显示登录
+      loginShow: false,
       is_loading: true,
       isshow: false,
       // 头顶播报定时器
@@ -188,18 +221,29 @@ export default {
     }
   },
   created() {
-    let { order_sn } = getUrlParams()
-    let orderSn = sessionStorage.getItem('order_sn')
-    if(orderSn && orderSn == order_sn){
-      this.is_ok = false
-    }else{
-      this.is_ok = true
+    let phone_status = Cookie.get("phone_status");
+    if (
+      phone_status != "binded" &&
+      phone_status != "bind_success" &&
+      phone_status != "merge_success"
+    ) {
+      //记录1:有无绑定手机
+      this.bindPhoneRecordType = false;
+    } else {
+      this.bindPhoneRecordType = true;
     }
-    this.order_sn = order_sn
+    let { order_sn } = getUrlParams();
+    console.log(order_sn)
+    let orderSn = sessionStorage.getItem("order_sn");
+    if (orderSn && orderSn == order_sn) {
+      this.is_ok = false;
+    } else {
+      this.is_ok = true;
+    }
+    this.order_sn = order_sn;
   },
   mounted() {
     _hmt.push(["_trackEvent", "活动页", "跳转到活动页"]);
-    console.log(this.order_sn)
     this.getList();
 
     this.loading = setTimeout(() => {
@@ -208,7 +252,6 @@ export default {
   },
 
   methods: {
-    
     //获取支付返券
     async getOrderCoupon() {
       // 订单判断
@@ -219,7 +262,10 @@ export default {
       let res = await requestOrderCoupons(params);
       if (res.data.coupon_id == undefined) {
         this.is_show = false;
+        this.returnTicketRecordType = false;
       } else {
+        //记录2,有支付返券
+        this.returnTicketRecordType = true;
         this.order_coupon = res.data;
         this.is_show = true;
         this.is_get = true;
@@ -234,21 +280,21 @@ export default {
       this.is_show = false;
       window.location.href = process.env.VUE_APP_SHOP;
     },
-
     getStopIndex() {
       // 获取服务器返回的index
       requestGetResult()
         .then(res => {
-          // console.log(res);
           let data = res.data;
           this.lottery_data = data;
           if (res.data == "谢谢参与！") {
+            this.prizeRecordType = false;
             for (let a = 0; a < this.list.length; a++) {
               if (this.list[a].youhui_type == "3") {
                 this.stopIndex = a;
               }
             }
           } else {
+            this.prizeRecordType = true;
             for (let a = 0; a < this.list.length; a++) {
               if (this.list[a].id == data.win_id) {
                 this.stopIndex = a;
@@ -326,7 +372,6 @@ export default {
     },
     enter(cur, stop) {
       // 计算需要停止的index
-      // console.log(cur, stop);
       let count = stop - cur;
       if (count <= 4) {
         count = count > -4 ? count + 8 : count + 16;
@@ -383,7 +428,6 @@ export default {
     },
     async getList() {
       // let location = await getLocation();
-      // console.log(location)
       let params = {
         xpoint: "113.450163",
         ypoint: "23.107527",
@@ -391,9 +435,9 @@ export default {
         // order_sn: (new Date()).getTime()
       };
       let res = await requestLotterys(params);
-      if(res.code == 313000){
-        this.is_ok = false
-        return
+      if (res.code == 313000) {
+        this.is_ok = false;
+        return;
       }
       let list = res.data.lottery_info;
       for (let i = 0; i < list.length; i++) {
@@ -407,9 +451,74 @@ export default {
       let data = await requestGetCoupon();
       // 还需要操作
       this.is_show = false;
+      if (
+        this.bindPhoneRecordType == false &&
+        (this.returnTicketRecordType == true || this.prizeRecordType == true)
+      ) {
+        this.loginShow = true;
+        return;
+      }
       window.location.href =
         process.env.VUE_APP_SHOP + "id=" + this.lottery_data.store_id;
       // window.location.href = 'http://user.tdianyi.com/'
+    },
+    getPhoneCode() {
+      if (/^1[3456789]\d{9}$/.test(Number(this.phone))) {
+        getCode(this.phone)
+          .then(res => {
+            if (res.status_code == 200) {
+              Toast.success(res.message);
+              this.is_code = false;
+            } else {
+              Toast.fail(res.message);
+            }
+          })
+          .catch(err => {
+            console.log(err);
+            Toast("网络似乎不太通畅，请稍候再试");
+          });
+      } else {
+        Toast.fail("请输入正确的手机号");
+      }
+    },
+    login() {
+      if (this.phone && this.code) {
+        let type = getBrowserType == "wechat" ? "wx" : "ali";
+        phoneLogin({
+          phone: this.phone,
+          verify_code: this.code,
+          from: type
+        })
+          .then(res => {
+            if (res.status_code == 200) {
+              Toast.success("登录成功");
+              this.loginShow = false;
+              let url = process.env.VUE_APP_SHOP + "id=" + this.lottery_data.store_id;
+              encodeURIComponent(url)
+              window.location.href = process.env.VUE_APP_USER_API +
+              "/v1/user/auth/relogin?phone=" +
+              this.phone +
+              "&verify_code=" +
+              this.code +
+              "&url=" +
+              url +
+              "&from=" +
+              type;
+                
+            } else {
+              Toast.success(res.message || "登录失败");
+            }
+          })
+          .catch(err => {
+            console.log(err);
+            Toast("网络似乎不太通畅，请稍候再试");
+          });
+      }
+    },
+    closeLogin() {
+      this.loginShow = false;
+      window.location.href =
+        process.env.VUE_APP_SHOP + "id=" + this.lottery_data.store_id;
     }
   },
   beforeDestroy() {
@@ -530,7 +639,7 @@ export default {
 /* 头部滚动条 */
 .scroll-top {
   height: 35px;
-  background: rgba(167,48,8);
+  background: rgba(167, 48, 8);
   font-size: 13px;
   color: #fff;
   line-height: 35px;
@@ -1003,5 +1112,120 @@ main {
 .played_img:active {
   background: #313131;
   opacity: 0.3;
+}
+.login-mask {
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.login-content {
+  width: 2.99rem;
+  height: 2.33rem;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 0.05rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.3rem 0 0;
+}
+.login-close-btn {
+  width: 0.26rem;
+  height: 0.26rem;
+  margin-top: 0.2rem;
+}
+.login-title {
+  font-size: 0.16rem;
+  font-family: PingFang SC;
+  font-weight: bold;
+  color: rgba(1, 1, 1, 1);
+  line-height: 1;
+  margin-bottom: 0.12rem;
+}
+.login-info {
+  font-size: 0.13rem;
+  font-family: PingFang SC;
+  color: rgba(153, 153, 153, 1);
+  line-height: 1;
+  margin-bottom: 0.2rem;
+}
+.login-phone-box {
+  width: 2.02rem;
+  height: 0.27rem;
+  margin-bottom: 0.07rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.login-code-box {
+  width: 2.02rem;
+  height: 0.27rem;
+  margin-bottom: 0.2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+.login-phone-title,
+.login-code-title {
+  width: 0.49rem;
+  height: 0.15rem;
+  font-size: 0.15rem;
+  font-family: PingFang SC;
+  color: rgba(0, 0, 0, 1);
+  line-height: 1;
+  margin-right: 0.08rem;
+}
+.login-phone-input {
+  width: 1.455rem;
+  height: 0.27rem;
+  background: rgba(246, 246, 246, 1);
+  border-radius: 0.135rem;
+  font-size: 0.12rem;
+  padding-left: 0.1rem;
+  box-sizing: border-box;
+}
+.login-code-input {
+  width: 0.9rem;
+  height: 0.27rem;
+  background: rgba(246, 246, 246, 1);
+  border-radius: 0.135rem;
+  font-size: 0.12rem;
+  padding-left: 0.1rem;
+  box-sizing: border-box;
+  margin-right: 0.05rem;
+}
+.login-code-btn {
+  width: 0.505rem;
+  height: 0.27rem;
+  background: rgba(255, 68, 68, 1);
+  border-radius: 0.135rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.13rem;
+  font-family: PingFang SC;
+  color: rgba(255, 255, 255, 1);
+}
+.login-sumbit-btn {
+  width: 2.33rem;
+  height: 0.38rem;
+  background: rgba(255, 68, 68, 1);
+  border-radius: 0.19rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.15rem;
+  font-family: PingFang SC;
+  color: rgba(255, 255, 255, 1);
 }
 </style>
