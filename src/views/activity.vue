@@ -136,6 +136,7 @@ import {
   requestOrderCoupons
 } from "../api/api";
 import { getUrlParams } from "../utils/get_info";
+import { Cookie } from "../utils/common";
 import { Loading, Dialog } from "vant";
 export default {
   data() {
@@ -232,6 +233,7 @@ export default {
       this.bindPhoneRecordType = true;
     }
     let { order_sn } = getUrlParams();
+    console.log(order_sn)
     let orderSn = sessionStorage.getItem("order_sn");
     if (orderSn && orderSn == order_sn) {
       this.is_ok = false;
