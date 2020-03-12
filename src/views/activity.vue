@@ -461,6 +461,7 @@ export default {
         (this.returnTicketRecordType == true || this.prizeRecordType == true)
       ) {
         this.loginShow = true;
+        
         return;
       }
       // window.location.href =
