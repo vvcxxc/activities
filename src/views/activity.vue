@@ -455,7 +455,7 @@ export default {
       let data = await requestGetCoupon();
       // 还需要操作
       this.is_show = false;
-      console.log(this.bindPhoneRecordType,this.returnTicketRecordType,this.prizeRecordType )
+      console.log('99:',this.bindPhoneRecordType,this.returnTicketRecordType,this.prizeRecordType )
       if (
         this.bindPhoneRecordType == false &&
         (this.returnTicketRecordType == true || this.prizeRecordType == true)
@@ -463,9 +463,8 @@ export default {
         this.loginShow = true;
         return;
       }
-      window.location.href =
-        process.env.VUE_APP_SHOP + "id=" + this.lottery_data.store_id;
-      // window.location.href = 'http://user.tdianyi.com/'
+      // window.location.href =
+      //   process.env.VUE_APP_SHOP + "id=" + this.lottery_data.store_id;
     },
     getPhoneCode() {
       if (/^1[3456789]\d{9}$/.test(Number(this.phone))) {
