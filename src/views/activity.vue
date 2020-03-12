@@ -509,12 +509,21 @@ export default {
           from: type
         })
           .then(res => {
-            console.log(res);
             if (res.status_code == 200) {
               Toast.success("登录成功");
               this.loginShow = false;
-              window.location.href =
-                process.env.VUE_APP_SHOP + "id=" + this.lottery_data.store_id;
+              let url = process.env.VUE_APP_SHOP + "id=" + this.lottery_data.store_id;
+              encodeURIComponent(url)
+              window.location.href = process.env.VUE_APP_USER_API +
+              "/v1/user/auth/relogin?phone=" +
+              this.phone +
+              "&verify_code=" +
+              this.code +
+              "&url=" +
+              url +
+              "&from=" +
+              type;
+                
             } else {
               Toast.success(res.message || "登录失败");
             }
