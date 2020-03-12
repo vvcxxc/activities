@@ -111,13 +111,6 @@
         </div>
         <div class="login-code-box">
           <div class="login-code-title">验证码</div>
-
-          <!-- <van-field
-            value="{{ code }}"
-            placeholder="请输入验证码"
-            bind:change="onChange"
-          />-->
-
           <input class="login-code-input" placeholder="请输入验证码" v-model="code" />
           <div v-if="canSendCode" class="login-code-btn" @click="getPhoneCode">获取</div>
           <div v-else class="login-code-btn">{{wait}}</div>
@@ -262,10 +255,6 @@ export default {
   },
 
   methods: {
-    onChange(event) {
-      // event.detail 为当前输入的值
-      console.log(event.detail);
-    },
     //获取支付返券
     async getOrderCoupon() {
       // 订单判断
@@ -465,11 +454,7 @@ export default {
       let data = await requestGetCoupon();
       // 还需要操作
       this.is_show = false;
-      console.log(
-        this.bindPhoneRecordType,
-        this.returnTicketRecordType,
-        this.prizeRecordType
-      );
+      console.log(this.bindPhoneRecordType,this.returnTicketRecordType,this.prizeRecordType )
       if (
         this.bindPhoneRecordType == false &&
         (this.returnTicketRecordType == true || this.prizeRecordType == true)
@@ -528,19 +513,18 @@ export default {
             if (res.status_code == 200) {
               Toast.success("登录成功");
               this.loginShow = false;
-              let url =
-                process.env.VUE_APP_SHOP + "id=" + this.lottery_data.store_id;
-              encodeURIComponent(url);
-              window.location.href =
-                process.env.VUE_APP_USER_API +
-                "/v1/user/auth/relogin?phone=" +
-                this.phone +
-                "&verify_code=" +
-                this.code +
-                "&url=" +
-                url +
-                "&from=" +
-                type;
+              let url = process.env.VUE_APP_SHOP + "id=" + this.lottery_data.store_id;
+              encodeURIComponent(url)
+              window.location.href = process.env.VUE_APP_USER_API +
+              "/v1/user/auth/relogin?phone=" +
+              this.phone +
+              "&verify_code=" +
+              this.code +
+              "&url=" +
+              url +
+              "&from=" +
+              type;
+                
             } else {
               Toast.success(res.message || "登录失败");
             }
