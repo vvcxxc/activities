@@ -236,7 +236,7 @@ export default {
       this.bindPhoneRecordType = true;
     }
     let { order_sn } = getUrlParams();
-    console.log(getBrowserType())
+    console.log(getBrowserType());
     console.log(order_sn);
     let orderSn = sessionStorage.getItem("order_sn");
     if (orderSn && orderSn == order_sn) {
@@ -281,6 +281,13 @@ export default {
       this.is_show = false;
     },
     thanks() {
+      if (
+        this.bindPhoneRecordType == false &&
+        (this.returnTicketRecordType == true || this.prizeRecordType == true)
+      ) {
+        this.loginShow = true;
+        return;
+      }
       this.is_show = false;
       window.location.href = process.env.VUE_APP_SHOP;
     },
@@ -455,17 +462,15 @@ export default {
       let data = await requestGetCoupon();
       // 还需要操作
       this.is_show = false;
-      console.log('99:',this.bindPhoneRecordType,this.returnTicketRecordType,this.prizeRecordType )
       if (
         this.bindPhoneRecordType == false &&
         (this.returnTicketRecordType == true || this.prizeRecordType == true)
       ) {
         this.loginShow = true;
-        
         return;
       }
-      // window.location.href =
-      //   process.env.VUE_APP_SHOP + "id=" + this.lottery_data.store_id;
+      window.location.href =
+        process.env.VUE_APP_SHOP + "id=" + this.lottery_data.store_id;
     },
     getPhoneCode() {
       if (/^1[3456789]\d{9}$/.test(Number(this.phone))) {
@@ -514,18 +519,19 @@ export default {
             if (res.status_code == 200) {
               Toast.success("登录成功");
               this.loginShow = false;
-              let url = process.env.VUE_APP_SHOP + "id=" + this.lottery_data.store_id;
-              encodeURIComponent(url)
-              window.location.href = process.env.VUE_APP_USER_API +
-              "/v1/user/auth/relogin?phone=" +
-              this.phone +
-              "&verify_code=" +
-              this.code +
-              "&url=" +
-              url +
-              "&from=" +
-              type;
-                
+              let url =
+                process.env.VUE_APP_SHOP + "id=" + this.lottery_data.store_id;
+              encodeURIComponent(url);
+              window.location.href =
+                process.env.VUE_APP_USER_API +
+                "/v1/user/auth/relogin?phone=" +
+                this.phone +
+                "&verify_code=" +
+                this.code +
+                "&url=" +
+                url +
+                "&from=" +
+                type;
             } else {
               Toast.success(res.message || "登录失败");
             }
