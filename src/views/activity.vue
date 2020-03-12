@@ -112,7 +112,8 @@
         <div class="login-code-box">
           <div class="login-code-title">验证码</div>
           <input class="login-code-input" placeholder="请输入验证码" v-model="code" />
-          <div class="login-code-btn" @click="getPhoneCode">获取</div>
+          <div v-if="canSendCode" class="login-code-btn" @click="getPhoneCode">获取</div>
+          <div v-else class="login-code-btn">{{wait}}</div>
         </div>
         <div class="login-sumbit-btn" @click="login">提交</div>
       </div>
@@ -137,7 +138,7 @@ import {
 } from "../api/api";
 import { getUrlParams } from "../utils/get_info";
 import { Cookie } from "../utils/common";
-import { Loading, Dialog,Toast } from "vant";
+import { Loading, Dialog, Toast } from "vant";
 export default {
   data() {
     return {
@@ -145,6 +146,8 @@ export default {
       //登录手机
       phone: "",
       //登录验证码
+      canSendCode: true,
+      wait: 60,
       code: "",
       //无绑手机
       bindPhoneRecordType: false,
@@ -233,7 +236,7 @@ export default {
       this.bindPhoneRecordType = true;
     }
     let { order_sn } = getUrlParams();
-    console.log(order_sn)
+    console.log(order_sn);
     let orderSn = sessionStorage.getItem("order_sn");
     if (orderSn && orderSn == order_sn) {
       this.is_ok = false;
@@ -464,9 +467,11 @@ export default {
     },
     getPhoneCode() {
       if (/^1[3456789]\d{9}$/.test(Number(this.phone))) {
+        Toast.loading();
         getCode(this.phone)
           .then(res => {
             if (res.status_code == 200) {
+              this.changeTimeout();
               Toast.success(res.message);
               this.is_code = false;
             } else {
@@ -480,6 +485,20 @@ export default {
       } else {
         Toast.fail("请输入正确的手机号");
       }
+    },
+    changeTimeout() {
+      let _this = this;
+      let timer = setTimeout(() => {
+        clearTimeout(timer);
+        if (this.wait == 0) {
+          _this.canSendCode = true;
+          _this.wait = 60;
+        } else {
+          _this.canSendCode = false;
+          _this.wait = _this.wait - 1;
+          this.changeTimeout();
+        }
+      }, 1000);
     },
     login() {
       if (this.phone && this.code) {
